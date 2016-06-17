@@ -12,6 +12,28 @@ end
 [@js.scope "document"]
 
 (************************************)
+type travel_mode =
+  | Driving   [@js "DRIVING"]
+  | Walking   [@js "WALKING"]
+  | Bicycling [@js "BICYCLING"]
+  | Transit   [@js "TRANSIT"]
+  [@@ js.enum]
+
+type symbol_path =
+  | Circle                [@js 0]
+  | Forward_closed_arrow  [@js 1]
+  | Forward_open_arrow    [@js 2]
+  | Backward_closed_arrow [@js 3]
+  | Backward_open_arrow   [@js 4]
+  [@@ js.enum]
+
+type animation =
+  | Bounce [@js 1]
+  | Drop   [@js 2]
+  | Nr     [@js 3]
+  | Lr     [@js 4]
+  [@@ js.enum]
+
 type map_types =
   | Roadmap   [@js "roadmap"]
   | Satellite [@js "satellite"]
@@ -19,39 +41,69 @@ type map_types =
   | Terrain   [@js "terrain"]
   [@@js.enum]
 
-module GeocoderLocationType: sig
-  type t
-  (** SUM TYPE **)
-end
+type geocoder_location_type =
+  | Approximate        [@js "APPROXIMATE"]
+  | Geometric_center   [@js "GEOMETRIC_CENTER"]
+  | Range_interpolated [@js "RANGE_INTERPOLATED"]
+  | Rooftop            [@js "ROOFTOP"]
+  [@@js.enum]
 
-module GeocoderStatus: sig
-  type t
-  (** SUM TYPE **)
-end
+type geocoder_status =
+  | Error            [@js "ERROR"]
+  | Invalid_request  [@js "INVALID_REQUEST"]
+  | Ok               [@js "OK"]
+  | Over_query_limit [@js "OVER_QUERY_LIMIT"]
+  | Request_denied   [@js "REQUEST_DENIED"]
+  | Unknown_error    [@js "UNKNOWN_ERROR"]
+  | Zero_results     [@js "ZERO_RESULTS"]
+  [@@js.enum]
 
-module ControlPosition: sig
-  type t
-    (** SUM TYPE !!!! *)
-end
+type control_position =
+  | BOTTOM        [@js 11]
+  | BOTTOM_CENTER [@js 11]
+  | BOTTOM_LEFT   [@js 10]
+  | BOTTOM_RIGHT  [@js 12]
+  | CENTER        [@js 13]
+  | LEFT          [@js 5]
+  | LEFT_BOTTOM   [@js 6]
+  | LEFT_CENTER   [@js 4]
+  | LEFT_TOP      [@js 5]
+  | RIGHT         [@js 7]
+  | RIGHT_BOTTOM  [@js 9]
+  | RIGHT_CENTER  [@js 8]
+  | RIGHT_TOP     [@js 7]
+  | TOP           [@js 2]
+  | TOP_CENTER    [@js 2]
+  | TOP_LEFT      [@js 1]
+  | TOP_RIGHT     [@js 3]
+  [@@js.enum]
 
-module OverlayType: sig
-  type t
-    (** SUM TPYE !!! *)
-end
+type overlay_type =
+  | Marker    [@js "marker"]
+  | Polygon   [@js "polygon"]
+  | Polyline  [@js "polyline"]
+  | Rectangle [@js "rectangle"]
+  | Circle    [@js "circle"]
+  [@@js.enum]
 
-module StrokePosition: sig
-  type t
-    (** SUM TYPE !! **)
-end
+type stroke_position =
+  | Center  [@js 0]
+  | Inside  [@js 1]
+  | Outside [@js 2]
+  [@@js.enum]
 
 module VehicleType: sig
+  (* SUM TYPE *)
   type t
 end
 
-module MapTypeControlStyle: sig
-  type t
-    (** SUM TYPE !! **)
-end
+type map_type_control_style =
+  | Default        [@js 0]
+  | Horizontal_bar [@js 1]
+  | Dropdown_menu  [@js 2]
+  | Inset          [@js 3]
+  | Inset_large    [@js 4]
+  [@@ js.enum]
 
 module Attribution: sig
   type t
@@ -61,6 +113,12 @@ module Attribution: sig
     ?web_url:string ->
     unit -> t
     [@@js.builder]
+  val ios_deep_link_id: t -> string [@@js.get]
+  val source: t -> string [@@js.get]
+  val web_url: t -> string [@@js.get]
+  val set_ios_deep_link_id: t -> string -> unit [@@js.set]
+  val set_source: t -> string -> unit [@@js.set]
+  val set_web_url: t -> string -> unit [@@js.set]
 end
 
 module LatLng: sig
@@ -68,7 +126,7 @@ module LatLng: sig
   val new_lat_lng: lat:float -> lng:float -> t [@@js.new]
   val lat: t -> float [@@js.call]
   val lng: t -> float [@@js.call]
-  (** Added for polymorphism **)
+  (** Unsafe **)
   val t_to_js : t -> Ojs.t
   val t_of_js : Ojs.t -> t
 end
@@ -118,6 +176,32 @@ module Size: sig
 end
 [@js.scope "google.maps"]
 
+module Icon: sig
+  type t
+  val create:
+    ?anchor:Point.t ->
+    ?label_origin:Point.t ->
+    ?origin:Point.t ->
+    ?scaled_size:Size.t ->
+    ?size:Size.t ->
+    ?url:string ->
+    unit ->
+    t
+    [@@js.builder]
+  val anchor: t -> Point.t [@@js.get]
+  val label_origin: t -> Point.t [@@js.get]
+  val origin: t -> Point.t [@@js.get]
+  val scaled_size: t -> Size.t [@@js.get]
+  val size: t -> Size.t [@@js.get]
+  val url: t -> string [@@js.get]
+  val set_anchor: t -> Point.t -> unit [@@js.set]
+  val set_label_origin: t -> Point.t -> unit [@@js.set]
+  val set_origin: t -> Point.t -> unit [@@js.set]
+  val set_scaled_size: t -> Size.t -> unit [@@js.set]
+  val set_size: t -> Size.t -> unit [@@js.set]
+  val set_url: t -> string -> unit [@@js.set]
+end
+
 module Projection: sig
   type t
   val from_lat_lng_to_point : t -> LatLng.t -> Point.t
@@ -141,8 +225,8 @@ module MapOptions: sig
     ?map_maker:bool ->
     ?map_type_control:bool ->
     ?map_type_id:map_types ->
-    ?max_zoom:float ->
-    ?min_zoom:float ->
+    ?max_zoom:int ->
+    ?min_zoom:int ->
     ?no_clear:bool ->
     ?pan_control:bool ->
     ?rotate_control:bool ->
@@ -150,11 +234,58 @@ module MapOptions: sig
     ?scrollwheel:bool ->
     ?sign_in_control:bool ->
     ?tilt:float ->
-    ?zoom:float ->
+    ?zoom:int ->
     ?zoom_control:bool ->
     unit ->
     t
     [@@js.builder]
+
+  val background_color: t -> string [@@js.get]
+  val center: t -> LatLng.t [@@js.get]
+  val clickable_icons: t -> bool [@@js.get]
+  val disable_double_click_zoom: t -> bool [@@js.get]
+  val draggable: t -> bool [@@js.get]
+  val draggable_cursor: t -> string [@@js.get]
+  val dragging_cursor: t -> string [@@js.get]
+  val heading: t -> float [@@js.get]
+  val keyboard_shortcuts: t -> bool [@@js.get]
+  val map_maker: t -> bool [@@js.get]
+  val map_type_control: t -> bool [@@js.get]
+  val map_type_id: t -> map_types [@@js.get]
+  val max_zoom: t -> int [@@js.get]
+  val min_zoom: t -> int [@@js.get]
+  val no_clear: t -> bool [@@js.get]
+  val pan_control: t -> bool [@@js.get]
+  val rotate_control: t -> bool [@@js.get]
+  val scale_controle: t -> bool [@@js.get]
+  val scrollwheel: t -> bool [@@js.get]
+  val sign_in_control: t -> bool [@@js.get]
+  val tilt: t -> float [@@js.get]
+  val zoom: t -> int [@@js.get]
+  val zoom_control: t -> bool [@@js.get]
+  val set_background_color: t -> string -> unit [@@js.set]
+  val set_center: t -> LatLng.t -> unit [@@js.set]
+  val set_clickable_icons: t -> bool -> unit [@@js.set]
+  val set_disable_double_click_zoom: t -> bool -> unit [@@js.set]
+  val set_draggable: t -> bool -> unit [@@js.set]
+  val set_draggable_cursor: t -> string -> unit [@@js.set]
+  val set_dragging_cursor: t -> string -> unit [@@js.set]
+  val set_heading: t -> float -> unit [@@js.set]
+  val set_keyboard_shortcuts: t -> bool -> unit [@@js.set]
+  val set_map_maker: t -> bool -> unit [@@js.set]
+  val set_map_type_control: t -> bool -> unit [@@js.set]
+  val set_map_type_id: t -> map_types -> unit [@@js.set]
+  val set_max_zoom: t -> int -> unit [@@js.set]
+  val set_min_zoom: t -> int -> unit [@@js.set]
+  val set_no_clear: t -> bool -> unit [@@js.set]
+  val set_pan_control: t -> bool -> unit [@@js.set]
+  val set_rotate_control: t -> bool -> unit [@@js.set]
+  val set_scale_controle: t -> bool -> unit [@@js.set]
+  val set_scrollwheel: t -> bool -> unit [@@js.set]
+  val set_sign_in_control: t -> bool -> unit [@@js.set]
+  val set_tilt: t -> float -> unit [@@js.set]
+  val set_zoom: t -> int -> unit [@@js.set]
+  val set_zoom_control: t -> bool -> unit [@@js.set]
 end
 
 module Map: sig
@@ -173,7 +304,7 @@ module Map: sig
   val get_heading : t -> float [@@js.call]
   val get_projection : t -> Projection.t [@@js.call]
   val get_tilt : t -> float [@@js.call]
-  val get_zoom : t -> float [@@js.call]
+  val get_zoom : t -> int [@@js.call]
   val pan_by : t -> x:float -> y:float -> unit [@@js.call]
   val pan_to : t -> LatLng.t -> unit [@@js.call]
   val pan_to_bounds : t -> LatLngBounds.t -> unit [@@js.call]
@@ -183,7 +314,7 @@ module Map: sig
   val set_options : t -> MapOptions.t [@@js.call]
   (* val set_street_view : t -> StreetViewPanorama.t *)
   val set_tilt : t -> float -> unit [@@js.call]
-  val set_zoom : t -> float -> unit [@@js.call]
+  val set_zoom : t -> int -> unit [@@js.call]
   (** Attributes need getter and setter **)
   (** Added for polymorphism **)
   val t_to_js : t -> Ojs.t
@@ -220,6 +351,22 @@ module MapTypeStyler: sig
     unit ->
     t
     [@@js.builder]
+  val color: t -> string [@@js.get]
+  val gamma: t -> float [@@js.get]
+  val hue: t -> string [@@js.get]
+  val invert_lightness: t -> bool [@@js.get]
+  val lightness: t -> float [@@js.get]
+  val saturation: t -> float [@@js.get]
+  val visibility: t -> string [@@js.get]
+  val weight: t -> int [@@js.get]
+  val set_color: t -> string -> unit [@@js.set]
+  val set_gamma: t -> float -> unit [@@js.set]
+  val set_hue: t -> string -> unit [@@js.set]
+  val set_invert_lightness: t -> bool -> unit [@@js.set]
+  val set_lightness: t -> float -> unit [@@js.set]
+  val set_saturation: t -> float -> unit [@@js.set]
+  val set_visibility: t -> string -> unit [@@js.set]
+  val set_weight: t -> int -> unit [@@js.set]
 end
 (* End map *)
 
@@ -240,6 +387,16 @@ module MarkerLabel: sig
     ?font_weight:string ->
     ?text:string ->
     unit -> t [@@js.builder]
+  val color: t -> string [@@js.get]
+  val font_family: t -> string [@@js.get]
+  val font_size: t -> string [@@js.get]
+  val font_weight: t -> string [@@js.get]
+  val text: t -> string [@@js.get]
+  val set_color: t -> string -> unit [@@js.set]
+  val set_font_family: t -> string -> unit [@@js.set]
+  val set_font_size: t -> string -> unit [@@js.set]
+  val set_font_weight: t -> string -> unit [@@js.set]
+  val set_text: t -> string -> unit [@@js.set]
 end
 
 module MarkerPlace: sig
@@ -249,6 +406,12 @@ module MarkerPlace: sig
     ?place_id:string ->
     ?query:string ->
     unit -> t [@@js.builder]
+  val location: t -> LatLng.t [@@js.get]
+  val place_id: t -> string [@@js.get]
+  val query: t -> string [@@js.get]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_place_id: t -> string -> unit [@@js.set]
+  val set_query: t -> string -> unit [@@js.set]
 end
 
 module MarkerShape: sig
@@ -256,20 +419,25 @@ module MarkerShape: sig
   val create :
     ?coords:float list ->
     ?type':string ->
-    unit -> t [@@js.builder]
+    unit ->
+    t [@@js.builder]
+  val coords: t -> float list [@@js.get]
+  val type': t -> string [@@js.get]
+  val set_coords: t -> float list -> unit [@@js.set]
+  val set_type': t -> string -> unit [@@js.set]
 end
 
 module MarkerOptions: sig
   type t
   val create :
     ?anchor_point:Point.t ->
-    (*?animation:Animation.t -> *)
+    ?animation:animation ->
     ?attribution:Attribution.t ->
     ?clickable:bool ->
     ?cross_on_drag:bool ->
     ?cursor:string ->
     ?draggable:bool ->
-    (* ?icon -> Icon.t *)
+    ?icon:Icon.t ->
     ?label:MarkerLabel.t ->
     ?map:Map.t ->
     ?opacity:float ->
@@ -280,19 +448,56 @@ module MarkerOptions: sig
     ?title:string ->
     ?visible:bool ->
     ?z_index:float ->
-    unit -> t
+    unit ->
+    t
     [@@js.builder]
+  val anchor_point: t -> Point.t [@@js.get]
+  val animation: t -> animation [@@js.get]
+  val attribution: t -> Attribution.t [@@js.get]
+  val clickable: t -> bool [@@js.get]
+  val cross_on_drag: t -> bool [@@js.get]
+  val cursor: t -> string [@@js.get]
+  val draggable: t -> bool [@@js.get]
+  val icon: t -> Icon.t [@@js.get]
+  val label: t -> MarkerLabel.t [@@js.get]
+  val map: t -> Map.t [@@js.get]
+  val opacity: t -> float [@@js.get]
+  val optimized: t -> bool [@@js.get]
+  val place: t -> MarkerPlace.t [@@js.get]
+  val position: t -> LatLng.t [@@js.get]
+  val shape: t -> MarkerShape.t [@@js.get]
+  val title: t -> string [@@js.get]
+  val visible: t -> bool [@@js.get]
+  val z_index: t -> float [@@js.get]
+  val set_anchor_point: t -> Point.t -> unit [@@js.set]
+  val set_animation: t -> animation -> unit [@@js.set]
+  val set_attribution: t -> Attribution.t -> unit [@@js.set]
+  val set_clickable: t -> bool -> unit [@@js.set]
+  val set_cross_on_drag: t -> bool -> unit [@@js.set]
+  val set_cursor: t -> string -> unit [@@js.set]
+  val set_draggable: t -> bool -> unit [@@js.set]
+  val set_icon: t -> Icon.t -> unit [@@js.set]
+  val set_label: t -> MarkerLabel.t -> unit [@@js.set]
+  val set_map: t -> Map.t -> unit [@@js.set]
+  val set_opacity: t -> float -> unit [@@js.set]
+  val set_optimized: t -> bool -> unit [@@js.set]
+  val set_place: t -> MarkerPlace.t -> unit [@@js.set]
+  val set_position: t -> LatLng.t -> unit [@@js.set]
+  val set_shape: t -> MarkerShape.t -> unit [@@js.set]
+  val set_title: t -> string -> unit [@@js.set]
+  val set_visible: t -> bool -> unit [@@js.set]
+  val set_z_index: t -> float -> unit [@@js.set]
 end
 
 module Marker: sig
   type t
   val new_marker : ?opts:MarkerOptions.t -> unit -> t [@@js.new]
-  (* val get_animation : t -> Animation.t [@@js.call] *)
+  val get_animation : t -> animation [@@js.call]
   val get_attribution : t -> Attribution.t [@@js.call]
   val get_clickable : t -> bool [@@js.call]
   val get_cursor : t -> bool [@@js.call]
   val get_draggable : t -> bool [@@js.call]
-  (** val get_icon : t -> ???? [@@js.call] **)
+  val get_icon : t -> Icon.t [@@js.call]
   val get_label : t -> MarkerLabel.t [@@js.call]
   val get_map : t -> Map.t [@@js.call]
   val get_opacity : t -> float [@@js.call]
@@ -302,12 +507,12 @@ module Marker: sig
   val get_title : t -> string [@@js.call]
   val get_visible : t -> bool [@@js.call]
   val get_z_index : t -> float [@@js.call]
-  (* val set_animation : t -> Animation.t -> unit [@@js.call] **)
+  val set_animation : t -> animation -> unit [@@js.call]
   val set_attribution : t -> Attribution.t -> unit  [@@js.call]
   val set_clickable : t -> flag:bool -> unit [@@js.call]
   val set_cursor : t -> cursor:string -> unit [@@js.call]
   val set_draggable : t -> flag:bool -> unit [@@js.call]
-  (** val set_icon : t -> ???? -> unit **)
+  val set_icon : t -> Icon.t -> unit
   val set_label : t -> MarkerLabel.t -> unit
   val set_map : t -> Map.t option -> unit [@@js.call]
   val set_opacity : t -> float -> unit [@@js.call]
@@ -359,8 +564,21 @@ module InfoWindowOptions: sig
     ?pixel_offset:Size.t ->
     ?position:LatLng.t ->
     ?z_index:float ->
-    unit -> t
+    unit ->
+    t
     [@@js.builder]
+  val content: t -> string [@@js.get]
+  val disable_auto_pan: t -> bool [@@js.get]
+  val max_width: t -> float [@@js.get]
+  val pixel_offset: t -> Size.t [@@js.get]
+  val position: t -> LatLng.t [@@js.get]
+  val z_index: t -> float [@@js.get]
+  val set_content: t -> string -> unit [@@js.set]
+  val set_disable_auto_pan: t -> bool -> unit [@@js.set]
+  val set_max_width: t -> float -> unit [@@js.set]
+  val set_pixel_offset: t -> Size.t -> unit [@@js.set]
+  val set_position: t -> LatLng.t -> unit [@@js.set]
+  val set_z_index: t -> float -> unit [@@js.set]
 end
 
 module InfoWindow: sig
@@ -381,6 +599,67 @@ module InfoWindow: sig
 end
 [@js.scope "google.maps"]
 
+(* Symbol *)
+
+module Symbol: sig
+  type t
+  val create:
+    ?anchor:Point.t ->
+    ?fill_color:string ->
+    ?fill_opacity:int ->
+    ?label_origin:Point.t ->
+    path:symbol_path ->
+    ?rotation:float ->
+    ?scale:float ->
+    ?stroke_color:string ->
+    ?stroke_opacity:float ->
+    ?stroke_weight:float ->
+    unit ->
+    t
+    [@@js.builder]
+  val anchor: t -> Point.t [@@js.get]
+  val fill_color: t -> string [@@js.get]
+  val fill_opacity: t -> int [@@js.get]
+  val label_origin: t -> Point.t [@@js.get]
+  val path: t -> symbol_path [@@js.get]
+  val rotation: t -> float [@@js.get]
+  val scale: t -> float [@@js.get]
+  val stroke_color: t -> string [@@js.get]
+  val stroke_opacity: t -> float [@@js.get]
+  val stroke_weight: t -> float [@@js.get]
+  val set_anchor: t -> Point.t -> unit [@@js.set]
+  val set_fill_color: t -> string -> unit [@@js.set]
+  val set_fill_opacity: t -> int -> unit [@@js.set]
+  val set_label_origin: t -> Point.t -> unit [@@js.set]
+  val set_path: t -> symbol_path -> unit [@@js.set]
+  val set_rotation: t -> float -> unit [@@js.set]
+  val set_scale: t -> float -> unit [@@js.set]
+  val set_stroke_color: t -> string -> unit [@@js.set]
+  val set_stroke_opacity: t -> float -> unit [@@js.set]
+  val set_stroke_weight: t -> float -> unit [@@js.set]
+end
+(* End symbol *)
+
+module IconSequence: sig
+  type t
+  val create:
+    ?fixed_rotation:bool ->
+    ?icon:Symbol.t ->
+    ?offset:string ->
+    ?repeat:string ->
+    unit ->
+    t
+    [@@js.builder]
+  val fixed_rotation: t -> bool [@@js.get]
+  val icon: t -> Symbol.t [@@js.get]
+  val offset: t -> string [@@js.get]
+  val repeat: t -> string [@@js.get]
+  val set_fixed_rotation: t -> bool -> unit [@@js.set]
+  val set_icon: t -> Symbol.t -> unit [@@js.set]
+  val set_offset: t -> string -> unit [@@js.set]
+  val set_repeat: t -> string -> unit [@@js.set]
+end
+
 module PolylineOptions: sig
   type t
   val create :
@@ -388,7 +667,7 @@ module PolylineOptions: sig
     ?draggable:bool ->
     ?editable:bool ->
     ?geodesic:bool ->
-(*    ?icons:IconSequence.t list ->*)
+    ?icons:IconSequence.t list ->
     ?map:Map.t ->
     ?path:LatLng.t list ->
     ?stroke_color:string ->
@@ -396,7 +675,33 @@ module PolylineOptions: sig
     ?stroke_weight:float ->
     ?visible:bool ->
     ?z_index:float ->
-    unit -> t [@@js.builder]
+    unit ->
+    t
+    [@@js.builder]
+  val clickable: t -> bool [@@js.get]
+  val draggable: t -> bool [@@js.get]
+  val editable: t -> bool [@@js.get]
+  val geodesic: t -> bool [@@js.get]
+  val icons: t -> IconSequence.t list [@@js.get]
+  val map: t -> Map.t [@@js.get]
+  val path: t -> LatLng.t list [@@js.get]
+  val stroke_color: t -> string [@@js.get]
+  val stroke_opacity: t -> float [@@js.get]
+  val stroke_weight: t -> float [@@js.get]
+  val visible: t -> bool [@@js.get]
+  val z_index: t -> float [@@js.get]
+  val set_clickable: t -> bool -> unit [@@js.set]
+  val set_draggable: t -> bool -> unit [@@js.set]
+  val set_editable: t -> bool -> unit [@@js.set]
+  val set_geodesic: t -> bool -> unit [@@js.set]
+  val set_icons: t -> IconSequence.t list -> unit [@@js.set]
+  val set_map: t -> Map.t -> unit [@@js.set]
+  val set_path: t -> LatLng.t list -> unit [@@js.set]
+  val set_stroke_color: t -> string -> unit [@@js.set]
+  val set_stroke_opacity: t -> float -> unit [@@js.set]
+  val set_stroke_weight: t -> float -> unit [@@js.set]
+  val set_visible: t -> bool -> unit [@@js.set]
+  val set_z_index: t -> float -> unit [@@js.set]
 end
 
 module Polyline: sig
@@ -426,6 +731,12 @@ module PolyMouseEvent: sig
     unit ->
     t
     [@@js.builder]
+  val edge: t -> int [@@js.get]
+  val path: t -> int [@@js.get]
+  val vertex: t -> int [@@js.get]
+  val set_edge: t -> int -> unit [@@js.set]
+  val set_path: t -> int -> unit [@@js.set]
+  val set_vertex: t -> int -> unit [@@js.set]
 end
 
 module PolygonOptions: sig
@@ -444,7 +755,35 @@ module PolygonOptions: sig
     ?stroke_weight:float ->
     ?visible:bool ->
     ?z_index:float ->
-    unit -> t [@@js.builder]
+    unit ->
+    t
+    [@@js.builder]
+  val clickable: t -> bool [@@js.get]
+  val draggable: t -> bool [@@js.get]
+  val editable: t -> bool [@@js.get]
+  val fill_color: t -> string [@@js.get]
+  val fill_opacity: t -> float [@@js.get]
+  val geodesic: t -> bool [@@js.get]
+  val map: t -> Map.t [@@js.get]
+  val path: t -> LatLng.t list [@@js.get]
+  val stroke_color: t -> string [@@js.get]
+  val stroke_opacity: t -> float [@@js.get]
+  val stroke_weight: t -> float [@@js.get]
+  val visible: t -> bool [@@js.get]
+  val z_index: t -> float [@@js.get]
+  val set_clickable: t -> bool -> unit [@@js.set]
+  val set_draggable: t -> bool -> unit [@@js.set]
+  val set_editable: t -> bool -> unit [@@js.set]
+  val set_fill_color: t -> string -> unit [@@js.set]
+  val set_fill_opacity: t -> float -> unit [@@js.set]
+  val set_geodesic: t -> bool -> unit [@@js.set]
+  val set_map: t -> Map.t -> unit [@@js.set]
+  val set_path: t -> LatLng.t list -> unit [@@js.set]
+  val set_stroke_color: t -> string -> unit [@@js.set]
+  val set_stroke_opacity: t -> float -> unit [@@js.set]
+  val set_stroke_weight: t -> float -> unit [@@js.set]
+  val set_visible: t -> bool -> unit [@@js.set]
+  val set_z_index: t -> float -> unit [@@js.set]
 end
 
 module Polygon: sig
@@ -482,12 +821,41 @@ module RectangleOptions: sig
     ?path:LatLng.t list ->
     ?stroke_color:string ->
     ?stroke_opacity:float ->
-    ?stroke_position:StrokePosition.t ->
+    ?stroke_position:stroke_position ->
     ?stroke_weight:float ->
     ?visible:bool ->
     ?z_index:float ->
     unit ->
-    t [@@js.builder]
+    t
+    [@@js.builder]
+  val bounds: t -> LatLngBounds.t [@@js.get]
+  val clickable: t -> bool [@@js.get]
+  val draggable: t -> bool [@@js.get]
+  val editable: t -> bool [@@js.get]
+  val fill_color: t -> string [@@js.get]
+  val fill_opacity: t -> float [@@js.get]
+  val map: t -> Map.t [@@js.get]
+  val path: t -> LatLng.t list [@@js.get]
+  val stroke_color: t -> string [@@js.get]
+  val stroke_opacity: t -> float [@@js.get]
+  val stroke_position: t -> stroke_position [@@js.get]
+  val stroke_weight: t -> float [@@js.get]
+  val visible: t -> bool [@@js.get]
+  val z_index: t -> float [@@js.get]
+  val set_bounds: t -> LatLngBounds.t -> unit [@@js.set]
+  val set_clickable: t -> bool -> unit [@@js.set]
+  val set_draggable: t -> bool -> unit [@@js.set]
+  val set_editable: t -> bool -> unit [@@js.set]
+  val set_fill_color: t -> string -> unit [@@js.set]
+  val set_fill_opacity: t -> float -> unit [@@js.set]
+  val set_map: t -> Map.t -> unit [@@js.set]
+  val set_path: t -> LatLng.t list -> unit [@@js.set]
+  val set_stroke_color: t -> string -> unit [@@js.set]
+  val set_stroke_opacity: t -> float -> unit [@@js.set]
+  val set_stroke_position: t -> stroke_position -> unit [@@js.set]
+  val set_stroke_weight: t -> float -> unit [@@js.set]
+  val set_visible: t -> bool -> unit [@@js.set]
+  val set_z_index: t -> float -> unit [@@js.set]
 end
 
 module Rectangle: sig
@@ -524,13 +892,41 @@ module CircleOptions: sig
     ?radius:float ->
     ?stroke_color:string ->
     ?stroke_opacity:float ->
-    ?stroke_position:StrokePosition.t ->
+    ?stroke_position:stroke_position ->
     ?stroke_weight:float ->
     ?visible:bool ->
     ?z_index:int ->
     unit ->
     t
     [@@js.builder]
+  val center: t -> LatLng.t [@@js.get]
+  val clickable: t -> bool [@@js.get]
+  val draggable: t -> bool [@@js.get]
+  val editable: t -> bool [@@js.get]
+  val fill_color: t -> string [@@js.get]
+  val fill_opacity: t -> float [@@js.get]
+  val map: t -> Map.t [@@js.get]
+  val radius: t -> float [@@js.get]
+  val stroke_color: t -> string [@@js.get]
+  val stroke_opacity: t -> float [@@js.get]
+  val stroke_position: t -> stroke_position [@@js.get]
+  val stroke_weight: t -> float [@@js.get]
+  val visible: t -> bool [@@js.get]
+  val z_index: t -> int [@@js.get]
+  val set_center: t -> LatLng.t -> unit [@@js.set]
+  val set_clickable: t -> bool -> unit [@@js.set]
+  val set_draggable: t -> bool -> unit [@@js.set]
+  val set_editable: t -> bool -> unit [@@js.set]
+  val set_fill_color: t -> string -> unit [@@js.set]
+  val set_fill_opacity: t -> float -> unit [@@js.set]
+  val set_map: t -> Map.t -> unit [@@js.set]
+  val set_radius: t -> float -> unit [@@js.set]
+  val set_stroke_color: t -> string -> unit [@@js.set]
+  val set_stroke_opacity: t -> float -> unit [@@js.set]
+  val set_stroke_position: t -> stroke_position -> unit [@@js.set]
+  val set_stroke_weight: t -> float -> unit [@@js.set]
+  val set_visible: t -> bool -> unit [@@js.set]
+  val set_z_index: t -> int -> unit [@@js.set]
 end
 
 module Circle: sig
@@ -620,7 +1016,19 @@ module GeocoderComponentRestrictions: sig
     ?locality:string ->
     ?postal_code:string ->
     ?route:string ->
-    unit -> t [@@js.builder]
+    unit ->
+    t
+    [@@js.builder]
+  val administrative_area: t -> string [@@js.get]
+  val country: t -> string [@@js.get]
+  val locality: t -> string [@@js.get]
+  val postal_code: t -> string [@@js.get]
+  val route: t -> string [@@js.get]
+  val set_administrative_area: t -> string -> unit [@@js.set]
+  val set_country: t -> string -> unit [@@js.set]
+  val set_locality: t -> string -> unit [@@js.set]
+  val set_postal_code: t -> string -> unit [@@js.set]
+  val set_route: t -> string -> unit [@@js.set]
 end
 
 module GeocoderRequest: sig
@@ -632,7 +1040,22 @@ module GeocoderRequest: sig
     ?location:LatLng.t ->
     ?place_id:string ->
     ?region:string ->
-    unit -> t [@@js.builder]
+    unit ->
+    t
+    [@@js.builder]
+  val address: t -> string [@@js.get]
+  val bounds: t -> LatLngBounds.t [@@js.get]
+  val component_restrictions: t -> GeocoderComponentRestrictions.t [@@js.get]
+  val location: t -> LatLng.t [@@js.get]
+  val place_id: t -> string [@@js.get]
+  val region: t -> string [@@js.get]
+  val set_address: t -> string -> unit [@@js.set]
+  val set_bounds: t -> LatLngBounds.t -> unit [@@js.set]
+  val set_component_restrictions:
+    t -> GeocoderComponentRestrictions.t -> unit [@@js.set]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_place_id: t -> string -> unit [@@js.set]
+  val set_region: t -> string -> unit [@@js.set]
 end
 
 module GeocoderAddressComponent: sig
@@ -651,7 +1074,7 @@ module GeocoderGeometry: sig
   val create:
     ?bounds: LatLngBounds.t ->
     ?location: LatLng.t ->
-    (*?location_type: GeocoderLocationType.t ->*)
+    ?location_type: geocoder_location_type ->
     ?viewport: LatLngBounds.t ->
     unit -> t
     [@@js.verbatim_names]
@@ -705,6 +1128,10 @@ module Duration: sig
     unit ->
     t
     [@@js.builder]
+  val text: t -> string [@@js.get]
+  val value: t -> float [@@js.get]
+  val set_text: t -> string -> unit [@@js.set]
+  val set_value: t -> float -> unit [@@js.set]
 end
 
 module Distance: sig
@@ -715,6 +1142,10 @@ module Distance: sig
     unit ->
     t
     [@@js.builder]
+  val text: t -> string [@@js.get]
+  val value: t -> float [@@js.get]
+  val set_text: t -> string -> unit [@@js.set]
+  val set_value: t -> float -> unit [@@js.set]
 end
 (* End *)
 
@@ -740,6 +1171,12 @@ module TransitAgency:sig
     unit ->
     t
     [@@js.builder]
+  val name: t -> string [@@js.get]
+  val phone: t -> string [@@js.get]
+  val url: t -> string [@@js.get]
+  val set_name: t -> string -> unit [@@js.set]
+  val set_phone: t -> string -> unit [@@js.set]
+  val set_url: t -> string -> unit [@@js.set]
 end
 
 module TransitStop:sig
@@ -750,6 +1187,10 @@ module TransitStop:sig
     unit ->
     t
     [@@js.builder]
+  val location: t -> LatLng.t [@@js.get]
+  val name: t -> string [@@js.get]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_name: t -> string -> unit [@@js.set]
 end
 
 module TransitLine: sig
@@ -765,6 +1206,22 @@ module TransitLine: sig
     ?vehicle:TransitVehicle.t ->
     unit ->
     t [@@js.builder]
+  val agencies: t -> TransitAgency.t list [@@js.get]
+  val color: t -> string [@@js.get]
+  val icon: t -> string [@@js.get]
+  val name: t -> string [@@js.get]
+  val short_name: t -> string [@@js.get]
+  val text_color: t -> string [@@js.get]
+  val url: t -> string [@@js.get]
+  val vehicle: t -> TransitVehicle.t [@@js.get]
+  val set_agencies: t -> TransitAgency.t list -> unit [@@js.set]
+  val set_color: t -> string -> unit [@@js.set]
+  val set_icon: t -> string -> unit [@@js.set]
+  val set_name: t -> string -> unit [@@js.set]
+  val set_short_name: t -> string -> unit [@@js.set]
+  val set_text_color: t -> string -> unit [@@js.set]
+  val set_url: t -> string -> unit [@@js.set]
+  val set_vehicle: t -> TransitVehicle.t -> unit [@@js.set]
 end
 
 module TransitDetails: sig
@@ -781,11 +1238,27 @@ module TransitDetails: sig
     unit ->
     t
     [@@js.builder]
+  val arrival_stop: t -> TransitStop.t [@@js.get]
+  val arrival_time: t -> Time.t [@@js.get]
+  val departure_stop: t -> TransitStop.t [@@js.get]
+  val departure_time: t -> Time.t [@@js.get]
+  val headsign: t -> string [@@js.get]
+  val headway: t -> float [@@js.get]
+  val line: t -> TransitLine.t [@@js.get]
+  val num_stops: t -> float [@@js.get]
+  val set_arrival_stop: t -> TransitStop.t -> unit [@@js.set]
+  val set_arrival_time: t -> Time.t -> unit [@@js.set]
+  val set_departure_stop: t -> TransitStop.t -> unit [@@js.set]
+  val set_departure_time: t -> Time.t -> unit [@@js.set]
+  val set_headsign: t -> string -> unit [@@js.set]
+  val set_headway: t -> float -> unit [@@js.set]
+  val set_line: t -> TransitLine.t -> unit [@@js.set]
+  val set_num_stops: t -> float -> unit [@@js.set]
 end
 (* End transit *)
 
 (* Direction *)
-
+(* WARNING VERBATIM NAMES *)
 module DirectionsStep:sig
   type t
   val create:
@@ -797,9 +1270,28 @@ module DirectionsStep:sig
     ?start_location:LatLng.t ->
     ?steps:t list ->
     ?transit:TransitDetails.t ->
-(*    ?travel_mode:TravelMode.t ->    *)
+    ?travel_mode:travel_mode ->
     unit ->
     t
+    [@@js.builder]
+  val distance: t -> Distance.t [@@js.get]
+  val duration: t -> Duration.t [@@js.get]
+  val end_location: t -> LatLng.t [@@js.get]
+  val instructions: t -> string [@@js.get]
+  val path: t -> LatLng.t list [@@js.get]
+  val start_location: t -> LatLng.t [@@js.get]
+  val steps: t -> t list [@@js.get]
+  val transit: t -> TransitDetails.t [@@js.get]
+  val travel_mode: t -> travel_mode [@@js.get]
+  val set_distance: t -> Distance.t -> unit [@@js.set]
+  val set_duration: t -> Duration.t -> unit [@@js.set]
+  val set_end_location: t -> LatLng.t -> unit [@@js.set]
+  val set_instructions: t -> string -> unit [@@js.set]
+  val set_path: t -> LatLng.t list -> unit [@@js.set]
+  val set_start_location: t -> LatLng.t -> unit [@@js.set]
+  val set_steps: t -> t list -> unit [@@js.set]
+  val set_transit: t -> TransitDetails.t -> unit [@@js.set]
+  val set_travel_mode: t -> travel_mode -> unit [@@js.set]
 end
 
 module DirectionsGeocodedWaypoint: sig
@@ -857,7 +1349,14 @@ module DirectionsResult: sig
     ?geocoded_waypoints:DirectionsGeocodedWaypoint.t list ->
     ?routes:DirectionsRoute.t list ->
     unit ->
-    t [@@js.builder]
+    t
+    [@@js.builder]
+  val geocoded_waypoints:
+    t -> DirectionsGeocodedWaypoint.t list [@@js.get]
+  val routes: t -> DirectionsRoute.t list [@@js.get]
+  val set_geocoded_waypoints:
+    t -> DirectionsGeocodedWaypoint.t list -> unit [@@js.set]
+  val set_routes: t -> DirectionsRoute.t list -> unit [@@js.set]
 end
 
 module DirectionsRendererOptions: sig
@@ -869,7 +1368,7 @@ module DirectionsRendererOptions: sig
     ?info_window:InfoWindow.t ->
     ?map:Map.t ->
     ?marker_options:MarkerOptions.t ->
-(*    ?panel:node ->*)
+    ?panel:Ojs.t ->
     ?polyline_options:PolylineOptions.t ->
     ?preserve_viewport:bool ->
     ?route_index:int ->
@@ -890,42 +1389,40 @@ module DirectionsRenderer: sig
     t [@@js.new]
   val get_directions : t -> DirectionsResult.t
   val get_map : t -> Map.t
-(*  val get_panel : t -> Node *)
+  val get_panel : t -> Ojs.t
   val get_route_index : t -> int
   val set_directions : t -> DirectionsResult.t -> unit
   val set_map : t -> Map.t -> unit
   val set_options : t -> DirectionsRendererOptions.t -> unit
-(*  val set_panel : panel:Node -> unit *)
+  val set_panel : t -> Ojs.t -> unit
   val set_route_index : t -> int -> unit
 end
 [@js.scope "google.maps"]
 
-module TrafficModel: sig
-  type t
-    (* SUM TYPE !! *)
-end
-
+type traffic_model =
+  | Best_guess  [@js "bestguess"]
+  | Optimistic  [@js "optimistic"]
+  | Pessimistic [@js "pessimistic"]
+  [@@ js.enum]
 
 (* Transit *)
-module TravelMode: sig
-  type t
-  (* SUM TYPE !!! *)
-end
+type transit_mode =
+  | Bus    [@js "BUS"]
+  | Rail   [@js "RAIL"]
+  | Subway [@js "SUBWAY"]
+  | Train  [@js "TRAIN"]
+  | Tram   [@js "TRAM"]
+  [@@ js.enum]
 
-module TransitMode: sig
-  type t
-    (* SUM TYPE !! *)
-end
+type transit_route_preference =
+  | Less_walking    [@js "LESS_WALKING"]
+  | Fewer_transfers [@js "FEWER_TRANSFERS"]
+  [@@ js.enum]
 
-module TransitRoutePreference: sig
-  type t
-    (* SUM TYPE !! *)
-end
-
-module UnitSystem: sig
-  type t
-    (* SUM TYPE !! *)
-end
+type unit_system =
+  | Metric [@js 0]
+  | Imperial [@js 1]
+  [@@ js.enum]
 
 module TransitLayer: sig
   type t
@@ -935,14 +1432,15 @@ module TransitLayer: sig
 end
 [@js.scope "google.maps"]
 
+(* WARNING DATA JS NOT DONE *)
 module TransitOptions: sig
   type t
   val create:
     (* Ojs.t = Data (JS) *)
     ?arrival_time:Ojs.t ->
     ?departure_time:Ojs.t ->
-    ?modes:TransitMode.t list ->
-    ?routing_preference:TransitRoutePreference.t ->
+    ?modes:transit_mode list ->
+    ?routing_preference:transit_route_preference ->
     unit ->
     t [@@js.builder]
 end
@@ -954,7 +1452,7 @@ module DrivingOptions: sig
   val create:
     (** Ojs.t = Date (JS) **)
     ?departure_time:Ojs.t ->
-    ?traffic_model:TrafficModel.t ->
+    ?traffic_model:traffic_model ->
     unit ->
     t
     [@@js.builder]
@@ -968,6 +1466,10 @@ module DirectionsWaypoint: sig
     unit ->
     t
     [@@js.builder]
+  val location: t -> LatLng.t [@@js.get]
+  val stopover: t -> bool [@@js.get]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_stopover: t -> bool -> unit [@@js.set]
 end
 
 module DirectionsRequest: sig
@@ -985,25 +1487,31 @@ module DirectionsRequest: sig
     ?provide_route_alternatives:bool ->
     ?region:string ->
     ?transit_options:TransitOptions.t ->
-    ?travel_mode:TravelMode.t ->
-    ?unit_system:UnitSystem.t ->
+    ?travel_mode:travel_mode ->
+    ?unit_system:unit_system ->
     ?waypoints:DirectionsWaypoint.t list ->
     unit ->
     t
     [@@js.builder]
 end
 
-module DirectionsStatus: sig
-  type t
-  (** SUM TYPES ! **)
-end
+type directions_status =
+  | Ok                     [@js "OK"]
+  | Unknown_error          [@js "UNKNOWN_ERROR"]
+  | Over_query_limit       [@js "OVER_QUERY_LIMIT"]
+  | Request_denied         [@js "REQUEST_DENIED"]
+  | Invalid_request        [@js "INVALID_REQUEST"]
+  | Zero_results           [@js "ZERO_RESULTS"]
+  | Max_waypoints_exceeded [@js "MAX_WAYPOINTS_EXCEEDED"]
+  | Not_found              [@js "NOT_FOUND"]
+  [@@ js.enum]
 
 module DirectionsService: sig
   type t
   val new_directions_service: unit -> t [@@js.new]
   val route: DirectionsRequest.t ->
     (DirectionsResult.t ->
-     DirectionsStatus.t ->
+     directions_status ->
      unit) ->
     unit [@@js.call]
 end
@@ -1015,10 +1523,14 @@ module PlaceAspectRating: sig
   type t
   val create:
     ?rating:int ->
-    ?type':string ->
+    ?type':(string [@js "type"]) ->
     unit ->
     t
     [@@js.builder]
+  val rating: t -> int [@@js.get]
+  val type': t -> string [@@js.get "type"]
+  val set_rating: t -> int -> unit [@@js.set]
+  val set_type': t -> string -> unit [@@js.set "type"]
 end
 
 module PhotoOptions: sig
@@ -1029,6 +1541,10 @@ module PhotoOptions: sig
     unit ->
     t
     [@@js.builder]
+  val max_height: t ->  int [@@js.get]
+  val max_width: t ->  int [@@js.get]
+  val set_max_height: t ->  int -> unit [@@js.set]
+  val set_max_width: t ->  int -> unit [@@js.set]
 end
 
 module PlaceReview: sig
@@ -1069,6 +1585,10 @@ module PlaceGeometry: sig
     unit ->
     t
     [@@js.builder]
+  val location: t -> LatLng.t [@@js.get]
+  val viewport: t -> LatLngBounds.t [@@js.get]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_viewport: t -> LatLngBounds.t -> unit [@@js.set]
 end
 
 module PlaceResult: sig
@@ -1097,6 +1617,47 @@ module PlaceResult: sig
     unit ->
     t
     [@@js.builder]
+  val address_components: t -> GeocoderAddressComponent.t list [@@js.get]
+  val aspects: t -> PlaceAspectRating.t list [@@js.get]
+  val formatted_address: t -> string [@@js.get]
+  val formatted_phone_number: t -> string [@@js.get]
+  val geometry: t -> PlaceGeometry.t [@@js.get]
+  val html_attributions: t -> string list [@@js.get]
+  val icon: t -> string [@@js.get]
+  val international_phone_number: t -> string [@@js.get]
+  val name: t -> string [@@js.get]
+  val permanently_closed: t -> bool [@@js.get]
+  val photos: t -> PlacePhoto.t list [@@js.get]
+  val place_id: t -> string [@@js.get]
+  val price_level: t -> int [@@js.get]
+  val rating: t -> float [@@js.get]
+  val reviews: t -> PlaceReview.t [@@js.get]
+  val types: t -> string list [@@js.get]
+  val url: t -> string [@@js.get]
+  val utc_offset: t -> int [@@js.get]
+  val vicinity: t -> string [@@js.get]
+  val website: t -> string [@@js.get]
+  val set_address_components:
+    t -> GeocoderAddressComponent.t list -> unit [@@js.set]
+  val set_aspects: t -> PlaceAspectRating.t list -> unit [@@js.set]
+  val set_formatted_address: t -> string -> unit [@@js.set]
+  val set_formatted_phone_number: t -> string -> unit [@@js.set]
+  val set_geometry: t -> PlaceGeometry.t -> unit [@@js.set]
+  val set_html_attributions: t -> string list -> unit [@@js.set]
+  val set_icon: t -> string -> unit [@@js.set]
+  val set_international_phone_number: t -> string -> unit [@@js.set]
+  val set_name: t -> string -> unit [@@js.set]
+  val set_permanently_closed: t -> bool -> unit [@@js.set]
+  val set_photos: t -> PlacePhoto.t list -> unit [@@js.set]
+  val set_place_id: t -> string -> unit [@@js.set]
+  val set_price_level: t -> int -> unit [@@js.set]
+  val set_rating: t -> float -> unit [@@js.set]
+  val set_reviews: t -> PlaceReview.t -> unit [@@js.set]
+  val set_types: t -> string list -> unit [@@js.set]
+  val set_url: t -> string -> unit [@@js.set]
+  val set_utc_offset: t -> int -> unit [@@js.set]
+  val set_vicinity: t -> string -> unit [@@js.set]
+  val set_website: t -> string -> unit [@@js.set]
 end
 
 module PlaceDetailsRequest: sig
@@ -1119,6 +1680,12 @@ module Place: sig
     unit ->
     t
     [@@js.builder]
+  val location: t -> LatLng.t [@@js.get]
+  val place_id: t -> string [@@js.get]
+  val query: t -> string [@@js.get]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_place_id: t -> string -> unit [@@js.set]
+  val set_query: t -> string -> unit [@@js.set]
 end
 
 module PlaceSearchPagination: sig
@@ -1130,10 +1697,10 @@ module PlaceSearchPagination: sig
 end
 [@js.scope "google.maps.places"]
 
-module RankBy: sig
-  type t
-    (* SUM TYPE ! DISTANCE | PROMINENCE *)
-end
+type rank_by =
+  | Prominence [@js 0]
+  | Distance   [@js 1]
+  [@@ js.enum]
 
 module PlaceSearchRequest: sig
   type t
@@ -1146,17 +1713,22 @@ module PlaceSearchRequest: sig
     ?name:string ->
     ?open_now:bool ->
     ?radius:float ->
-    ?rank_by:RankBy.t ->
+    ?rank_by:rank_by ->
     ?type':string ->
     unit ->
     t
     [@@js.builder]
 end
 
-module PlacesServiceStatus: sig
-  type t
-    (* SUM TYPE !!! *)
-end
+type places_service_status =
+  | Ok               [@js "OK"]
+  | Unknown_error    [@js "UNKNOWN_ERROR"]
+  | Over_query_limit [@js "OVER_QUERY_LIMIT"]
+  | Request_denied   [@js "REQUEST_DENIED"]
+  | Invalid_request  [@js "INVALID_REQUEST"]
+  | Zero_results     [@js "ZERO_RESULTS"]
+  | Not_found        [@js "NOT_FOUND"]
+  [@@ js.enum]
 
 module RadarSearchRequest: sig
   type t
@@ -1189,22 +1761,22 @@ module PlacesService: sig
   type t
   val new_places_service: Map.t -> t [@@js.new]
   val get_details: t -> PlaceDetailsRequest.t ->
-    (PlaceResult.t -> PlacesServiceStatus.t ->
+    (PlaceResult.t -> places_service_status ->
      unit) -> unit [@@js.call]
   val nearby_search: t -> PlaceSearchRequest.t ->
     (PlaceResult.t list ->
-     PlacesServiceStatus.t ->
+     places_service_status ->
      PlaceSearchPagination.t ->
      unit) ->
     unit [@@js.call]
   val radar_search: RadarSearchRequest.t ->
     (PlaceResult.t list ->
-     PlacesServiceStatus.t ->
+     places_service_status ->
      unit) ->
     unit [@@js.call]
   val text_search: TextSearchRequest.t ->
     (PlaceResult.t list ->
-     PlacesServiceStatus.t ->
+     places_service_status ->
      PlaceSearchPagination.t ->
      unit) ->
     unit [@@js.call]
@@ -1218,9 +1790,10 @@ end
 module ComponentRestrictions: sig
   type t
   val create:
-    ?country:string ->
-    unit ->
+    country:string ->
     t [@@js.builder]
+  val country: t -> string [@@js.get]
+  val set_country: t -> string -> unit [@@js.set]
 end
 
 module PredictionSubstring: sig
@@ -1231,6 +1804,10 @@ module PredictionSubstring: sig
     unit ->
     t
     [@@js.builder]
+  val length: t -> int [@@js.get]
+  val offset: t -> int [@@js.get]
+  val set_length: t -> int -> unit [@@js.set]
+  val set_offset: t -> int -> unit [@@js.set]
 end
 
 module PredictionTerm: sig
@@ -1241,6 +1818,10 @@ module PredictionTerm: sig
     unit ->
     t
     [@@js.builder]
+  val offset: t -> int [@@js.get]
+  val value: t -> string [@@js.get]
+  val set_offset: t -> int -> unit [@@js.set]
+  val set_value: t -> string -> unit [@@js.set]
 end
 
 (* Queries *)
@@ -1268,6 +1849,16 @@ module QueryAutocompletionRequest: sig
     unit ->
     t
     [@@js.builder]
+  val bounds: t -> LatLngBounds.t [@@js.get]
+  val input: t -> string [@@js.get]
+  val location: t -> LatLng.t [@@js.get]
+  val offset: t -> int [@@js.get]
+  val radius: t -> float [@@js.get]
+  val set_bounds: t -> LatLngBounds.t -> unit [@@js.set]
+  val set_input: t -> string -> unit [@@js.set]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_offset: t -> int -> unit [@@js.set]
+  val set_radius: t -> float -> unit [@@js.set]
 end
 (* End queries *)
 
@@ -1278,7 +1869,15 @@ module AutocompleteOptions: sig
     ?component_restrictions:ComponentRestrictions.t ->
     ?types:string list ->
     unit ->
-    t [@@js.builder]
+    t
+    [@@js.builder]
+  val bounds: t -> LatLngBounds.t [@@js.get]
+  val component_restrictions: t -> ComponentRestrictions.t [@@js.get]
+  val types: t -> string list [@@js.get]
+  val set_bounds: t -> LatLngBounds.t -> unit [@@js.set]
+  val set_component_restrictions:
+    t -> ComponentRestrictions.t -> unit [@@js.set]
+  val set_types: t -> string list -> unit [@@js.set]
 end
 
 module AutocompletePrediction: sig
@@ -1308,6 +1907,21 @@ module AutocompletionRequest: sig
     unit ->
     t
     [@@js.builder]
+  val bounds: t -> LatLngBounds.t [@@js.get]
+  val componentRestrictions: t -> ComponentRestrictions.t [@@js.get]
+  val input: t -> string [@@js.get]
+  val location: t -> LatLng.t [@@js.get]
+  val offset: t -> int [@@js.get]
+  val radius: t -> float [@@js.get]
+  val types: t -> string list [@@js.get]
+  val set_bounds: t -> LatLngBounds.t -> unit [@@js.set]
+  val set_componentRestrictions:
+    t -> ComponentRestrictions.t -> unit [@@js.set]
+  val set_input: t -> string -> unit [@@js.set]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_offset: t -> int -> unit [@@js.set]
+  val set_radius: t -> float -> unit [@@js.set]
+  val set_types: t -> string list -> unit [@@js.set]
 end
 
 module AutocompleteService: sig
@@ -1315,12 +1929,12 @@ module AutocompleteService: sig
   val new_autocomplete_service : unit -> t [@@js.new]
   val get_place_predictions :
     AutocompletionRequest.t ->
-    (AutocompletePrediction.t list -> PlacesServiceStatus.t -> unit)
+    (AutocompletePrediction.t list -> places_service_status -> unit)
     -> unit [@@js.call]
 
   val getQueryPredictions :
     QueryAutocompletionRequest.t ->
-    (QueryAutocompletePrediction.t list -> PlacesServiceStatus.t -> unit) ->
+    (QueryAutocompletePrediction.t list -> places_service_status -> unit) ->
     unit
 end
 [@js.scope "google.maps.places"]
@@ -1342,15 +1956,21 @@ end
 (* End autocompleter *)
 
 (* Distance Matrix *)
-module DistanceMatrixElementStatus: sig
-  type t
-  (* SUM TYPE *)
-end
+type distance_matrix_element_status =
+  | Ok           [@js "OK"]
+  | Not_found    [@js "NOT_FOUND"]
+  | Zero_results [@js "ZERO_RESULTS"]
+  [@@ js.enum]
 
-module DistanceMatrixStatus: sig
-  type t
-  (* SUM TYPE *)
-end
+type distance_matrix_status =
+  | Ok                      [@js "OK"]
+  | Invalid_request         [@js "INVALID_REQUEST"]
+  | Over_query_limit        [@js "OVER_QUERY_LIMIT"]
+  | Request_denied          [@js "REQUEST_DENIED"]
+  | Unknown_error           [@js "UNKNOWN_ERROR"]
+  | Max_elements_exceeded   [@js "MAX_ELEMENTS_EXCEEDED"]
+  | Max_dimensions_exceeded [@js "MAX_DIMENSIONS_EXCEEDED"]
+  [@@ js.enum]
 
 module DistanceMatrixRequest: sig
   type t
@@ -1364,8 +1984,8 @@ module DistanceMatrixRequest: sig
     ?origins:LatLng.t list ->
     ?region:string ->
     ?transit_options:TransitOptions.t ->
-    ?travel_mode:TravelMode.t ->
-    ?unit_system:UnitSystem.t ->
+    ?travel_mode:travel_mode ->
+    ?unit_system:unit_system ->
     unit ->
     t
     [@@js.builder]
@@ -1378,7 +1998,7 @@ module DistanceMatrixResponseElement: sig
     ?duration:Duration.t ->
     ?duration_in_traffic:Duration.t ->
     (*?fare:TransitFare.t -> *)
-    ?status:DistanceMatrixElementStatus.t ->
+    ?status:distance_matrix_element_status ->
     unit ->
     t
     [@@js.builder]
@@ -1387,8 +2007,7 @@ end
 module DistanceMatrixResponseRow: sig
   type t
   val create:
-    ?elements:DistanceMatrixResponseElement.t list ->
-    unit ->
+    elements:DistanceMatrixResponseElement.t list ->
     t
     [@@js.builder]
   val elements: t -> DistanceMatrixResponseElement.t list [@@js.get]
@@ -1404,7 +2023,13 @@ module DistanceMatrixResponse: sig
     ?rows:DistanceMatrixResponseRow.t list ->
     unit ->
     t
-  [@@js.builder]
+    [@@js.builder]
+  val destination_addresses: t -> string list [@@js.get]
+  val origin_addresses: t -> string list [@@js.get]
+  val rows: t -> DistanceMatrixResponseRow.t list [@@js.get]
+  val set_destination_addresses: t -> string list -> unit [@@js.set]
+  val set_origin_addresses: t -> string list -> unit [@@js.set]
+  val set_rows: t -> DistanceMatrixResponseRow.t list -> unit [@@js.set]
 end
 
 module DistanceMatrixService: sig
@@ -1413,7 +2038,7 @@ module DistanceMatrixService: sig
   val get_distance_matrix:
     t -> DistanceMatrixRequest.t ->
     (DistanceMatrixResponse.t ->
-     DistanceMatrixStatus.t ->
+     distance_matrix_status ->
      unit) ->
     unit
 end
@@ -1424,11 +2049,15 @@ end
 module DrawingControlOptions: sig
   type t
   val create:
-    ?drawing_modes:OverlayType.t list ->
-    ?position:ControlPosition.t ->
+    ?drawing_modes:overlay_type list ->
+    ?position:control_position ->
     unit ->
     t
     [@@js.builder]
+  val drawing_modes: t -> overlay_type list [@@js.get]
+  val position: t -> control_position [@@js.get]
+  val set_drawing_modes: t -> overlay_type list -> unit [@@js.set]
+  val set_position: t -> control_position -> unit [@@js.set]
 end
 
 module DrawingManagerOptions: sig
@@ -1437,7 +2066,7 @@ module DrawingManagerOptions: sig
     ?circle_options:CircleOptions.t ->
     ?drawing_controle:bool ->
     ?drawing_control_options:DrawingControlOptions.t ->
-    ?drawing_mode:OverlayType.t ->
+    ?drawing_mode:overlay_type ->
     ?map:Map.t ->
     ?marker_options:MarkerOptions.t ->
     ?polygon_options:PolygonOptions.t ->
@@ -1446,15 +2075,34 @@ module DrawingManagerOptions: sig
     unit ->
     t
     [@@js.builder]
+  val circle_options: t -> CircleOptions.t [@@js.get]
+  val drawing_controle: t -> bool [@@js.get]
+  val drawing_control_options: t -> DrawingControlOptions.t [@@js.get]
+  val drawing_mode: t -> overlay_type [@@js.get]
+  val map: t -> Map.t [@@js.get]
+  val marker_options: t -> MarkerOptions.t [@@js.get]
+  val polygon_options: t -> PolygonOptions.t [@@js.get]
+  val polyline_options: t -> PolylineOptions.t [@@js.get]
+  val rectangle_options: t -> RectangleOptions.t [@@js.get]
+  val set_circle_options: t -> CircleOptions.t -> unit [@@js.set]
+  val set_drawing_controle: t -> bool -> unit [@@js.set]
+  val set_drawing_control_options:
+    t -> DrawingControlOptions.t -> unit [@@js.set]
+  val set_drawing_mode: t -> overlay_type -> unit [@@js.set]
+  val set_map: t -> Map.t -> unit [@@js.set]
+  val set_marker_options: t -> MarkerOptions.t -> unit [@@js.set]
+  val set_polygon_options: t -> PolygonOptions.t -> unit [@@js.set]
+  val set_polyline_options: t -> PolylineOptions.t -> unit [@@js.set]
+  val set_rectangle_options: t -> RectangleOptions.t -> unit [@@js.set]
 end
 
 module DrawingManager: sig
   type t
   val new_drawing_manager:
     ?options:DrawingManagerOptions.t -> unit -> t [@@js.new]
-  val get_drawing_mode : t -> OverlayType.t [@@js.call]
+  val get_drawing_mode : t -> overlay_type [@@js.call]
   val get_map : t -> Map.t [@@js.call]
-  val set_drawing_mode : t -> OverlayType.t -> unit [@@js.call]
+  val set_drawing_mode : t -> overlay_type -> unit [@@js.call]
   val set_map : t -> Map.t -> unit [@@js.call]
   val set_options : t -> DrawingManagerOptions.t -> unit [@@js.call]
 end
@@ -1465,12 +2113,11 @@ end
 module ZoomControlOptions: sig
   type t
   val create:
-    ?position:ControlPosition.t ->
-    unit ->
+    position:control_position ->
     t
     [@@js.builder]
-  val position: t -> ControlPosition.t [@@js.get]
-  val set_position: t -> ControlPosition.t -> unit [@@js.set]
+  val position: t -> control_position [@@js.get]
+  val set_position: t -> control_position -> unit [@@js.set]
 end
 (* End zoom *)
 
@@ -1483,13 +2130,21 @@ module WeightedLocation: sig
     unit ->
     t
     [@@js.builder]
+  val location: t -> LatLng.t [@@js.get]
+  val weight: t -> float [@@js.get]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_weight: t -> float -> unit [@@js.set]
 end
 
 (* Elevation *)
-module ElevationStatus: sig
-  type t
-    (** SUM TYPE ! **)
-end
+type elevation_status =
+  | Ok               [@js "OK"]
+  | Unknown_error    [@js "UNKNOWN_ERROR"]
+  | Over_query_limit [@js "OVER_QUERY_LIMIT"]
+  | Request_denied   [@js "REQUEST_DENIED"]
+  | Invalid_request  [@js "INVALID_REQUEST"]
+  | Ir               [@js "DATA_NOT_AVAILABLE"]
+  [@@ js.enum]
 
 module PathElevationRequest: sig
   type t
@@ -1498,6 +2153,10 @@ module PathElevationRequest: sig
     samples:int ->
     t
     [@@js.builder]
+  val path: t -> LatLng.t list [@@js.get]
+  val samples: t -> int [@@js.get]
+  val set_path: t -> LatLng.t list -> unit [@@js.set]
+  val set_samples: t -> int -> unit [@@js.set]
 end
 
 module LocationElevationRequest: sig
@@ -1506,6 +2165,8 @@ module LocationElevationRequest: sig
     locations:LatLng.t list ->
     t
     [@@js.builder]
+  val locations: t -> LatLng.t list [@@js.get]
+  val set_locations: t -> LatLng.t list -> unit [@@js.set]
 end
 
 module ElevationResult: sig
@@ -1517,6 +2178,12 @@ module ElevationResult: sig
     unit ->
     t
     [@@js.builder]
+  val elevation: t -> float [@@js.get]
+  val location: t -> LatLng.t [@@js.get]
+  val resolution: t -> float [@@js.get]
+  val set_elevation: t -> float -> unit [@@js.set]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_resolution: t -> float -> unit [@@js.set]
 end
 
 module ElevationService: sig
@@ -1525,14 +2192,14 @@ module ElevationService: sig
   val get_elevation_along_path:
     PathElevationRequest.t ->
     (ElevationResult.t list ->
-     ElevationStatus.t ->
+     elevation_status ->
      unit) ->
     unit [@@js.call]
 
   val get_elevation_for_locations :
     LocationElevationRequest.t ->
     (ElevationResult.t list ->
-     ElevationStatus.t ->
+     elevation_status ->
      unit) ->
     unit [@@js.call]
 end
@@ -1543,9 +2210,11 @@ end
 module FullscreenControlOptions: sig
   type t
   val create:
-    position:ControlPosition.t ->
+    position:control_position ->
     t
     [@@js.builder]
+  val position: t -> control_position [@@js.get]
+  val set_position: t -> control_position -> unit [@@js.set]
 end
 (* End Fullscreen *)
 
@@ -1557,6 +2226,10 @@ module FusionTablesCell: sig
     value:string ->
     t
     [@@js.builder]
+  val column_name: t -> string [@@js.get]
+  val value: t -> string [@@js.get]
+  val set_column_name: t -> string -> unit [@@js.set]
+  val set_value: t -> string -> unit [@@js.set]
 end
 
 module FusionTablesHeatmap: sig
@@ -1565,6 +2238,8 @@ module FusionTablesHeatmap: sig
     enabled:bool ->
     t
     [@@js.builder]
+  val enabled: t -> bool [@@js.get]
+  val set_enabled: t -> bool -> unit [@@js.set]
 end
 
 module FusionTablesQuery: sig
@@ -1579,6 +2254,18 @@ module FusionTablesQuery: sig
     unit ->
     t
     [@@js.builder]
+  val from: t -> string [@@js.get]
+  val limit: t -> int [@@js.get]
+  val offset: t -> int [@@js.get]
+  val order_by: t -> string [@@js.get]
+  val select: t -> string [@@js.get]
+  val where: t -> string [@@js.get]
+  val set_from: t -> string -> unit [@@js.set]
+  val set_limit: t -> int -> unit [@@js.set]
+  val set_offset: t -> int -> unit [@@js.set]
+  val set_order_by: t -> string -> unit [@@js.set]
+  val set_select: t -> string -> unit [@@js.set]
+  val set_where: t -> string -> unit [@@js.set]
 end
 
 module FusionTablesMarkerOptions: sig
@@ -1587,6 +2274,8 @@ module FusionTablesMarkerOptions: sig
     icon_name:string ->
     t
     [@@js.builder]
+  val icon_name: t -> string [@@js.get]
+  val set_icon_name: t -> string -> unit [@@js.set]
 end
 
 module FusionTablesPolygonOptions: sig
@@ -1600,6 +2289,16 @@ module FusionTablesPolygonOptions: sig
     unit ->
     t
     [@@js.builder]
+  val fill_color: t -> string [@@js.get]
+  val fill_opacity: t -> float [@@js.get]
+  val stroke_color: t -> string [@@js.get]
+  val stroke_opacity: t -> float [@@js.get]
+  val stroke_weight: t -> float [@@js.get]
+  val set_fill_color: t -> string -> unit [@@js.set]
+  val set_fill_opacity: t -> float -> unit [@@js.set]
+  val set_stroke_color: t -> string -> unit [@@js.set]
+  val set_stroke_opacity: t -> float -> unit [@@js.set]
+  val set_stroke_weight: t -> float -> unit [@@js.set]
 end
 
 module FusionTablesPolylineOptions: sig
@@ -1611,6 +2310,12 @@ module FusionTablesPolylineOptions: sig
     unit ->
     t
     [@@js.builder]
+  val stroke_color: t -> string [@@js.get]
+  val stroke_opacity: t -> float [@@js.get]
+  val stroke_weight: t -> float [@@js.get]
+  val set_stroke_color: t -> string -> unit [@@js.set]
+  val set_stroke_opacity: t -> float -> unit [@@js.set]
+  val set_stroke_weight: t -> float -> unit [@@js.set]
 end
 
 module FusionTablesStyle: sig
@@ -1623,6 +2328,15 @@ module FusionTablesStyle: sig
     unit ->
     t
     [@@js.builder]
+  val marker_options: t -> FusionTablesMarkerOptions.t [@@js.get]
+  val polygon_options: t -> FusionTablesPolygonOptions.t [@@js.get]
+  val polyline_options: t -> FusionTablesPolylineOptions.t [@@js.get]
+  val where: t -> string [@@js.get]
+  val set_marker_options: t -> FusionTablesMarkerOptions.t -> unit [@@js.set]
+  val set_polygon_options: t -> FusionTablesPolygonOptions.t -> unit [@@js.set]
+  val set_polyline_options:
+    t -> FusionTablesPolylineOptions.t -> unit [@@js.set]
+  val set_where: t -> string -> unit [@@js.set]
 end
 
 module FusionTablesLayerOptions: sig
@@ -1637,6 +2351,18 @@ module FusionTablesLayerOptions: sig
     unit ->
     t
     [@@js.builder]
+  val clickable: t -> bool [@@js.get]
+  val heatmap: t -> FusionTablesHeatmap.t [@@js.get]
+  val map: t -> Map.t [@@js.get]
+  val query: t -> FusionTablesQuery.t [@@js.get]
+  val styles: t -> FusionTablesStyle.t list [@@js.get]
+  val suppress_info_windows: t -> bool [@@js.get]
+  val set_clickable: t -> bool -> unit [@@js.set]
+  val set_heatmap: t -> FusionTablesHeatmap.t -> unit [@@js.set]
+  val set_map: t -> Map.t -> unit [@@js.set]
+  val set_query: t -> FusionTablesQuery.t -> unit [@@js.set]
+  val set_styles: t -> FusionTablesStyle.t list -> unit [@@js.set]
+  val set_suppress_info_windows: t -> bool -> unit [@@js.set]
 end
 
 module FusionTablesLayer: sig
@@ -1653,10 +2379,17 @@ end
 (* End Fusion *)
 
 (* Kml *)
-module KmlLayerStatus: sig
-  type t
-  (* SUM TYPE *)
-end
+type kml_layer_status =
+  | Unknown            [@js "UNKNOWN"]
+  | Ok                 [@js "OK"]
+  | Invalid_request    [@js "INVALID_REQUEST"]
+  | Document_not_found [@js "DOCUMENT_NOT_FOUND"]
+  | Fetch_error        [@js "FETCH_ERROR"]
+  | Invalid_document   [@js "INVALID_DOCUMENT"]
+  | Document_too_large [@js "DOCUMENT_TOO_LARGE"]
+  | Limits_exceeded    [@js "LIMITS_EXECEEDED"]
+  | Timed_out          [@js "TIMED_OUT"]
+  [@@ js.enum]
 
 module KmlAuthor: sig
   type t
@@ -1666,6 +2399,12 @@ module KmlAuthor: sig
     uri:string ->
     t
     [@@js.builder]
+  val email: t -> string [@@js.get]
+  val name: t -> string [@@js.get]
+  val uri: t -> string [@@js.get]
+  val set_email: t -> string -> unit [@@js.set]
+  val set_name: t -> string -> unit [@@js.set]
+  val set_uri: t -> string -> unit [@@js.set]
 end
 
 module KmlFeatureData: sig
@@ -1680,6 +2419,18 @@ module KmlFeatureData: sig
     unit ->
     t
     [@@js.builder]
+  val author: t -> KmlAuthor.t [@@js.get]
+  val description: t -> string [@@js.get]
+  val id: t -> string [@@js.get]
+  val info_window_html: t -> string [@@js.get]
+  val name: t -> string [@@js.get]
+  val snipper: t -> string [@@js.get]
+  val set_author: t -> KmlAuthor.t -> unit [@@js.set]
+  val set_description: t -> string -> unit [@@js.set]
+  val set_id: t -> string -> unit [@@js.set]
+  val set_info_window_html: t -> string -> unit [@@js.set]
+  val set_name: t -> string -> unit [@@js.set]
+  val set_snipper: t -> string -> unit [@@js.set]
 end
 
 module KmlLayerMetadata: sig
@@ -1693,6 +2444,16 @@ module KmlLayerMetadata: sig
     unit ->
     t
     [@@js.builder]
+  val author: t -> KmlAuthor.t [@@js.get]
+  val description: t -> string [@@js.get]
+  val has_screen_overlays: t -> bool [@@js.get]
+  val name: t -> string [@@js.get]
+  val snipper: t -> string [@@js.get]
+  val set_author: t -> KmlAuthor.t -> unit [@@js.set]
+  val set_description: t -> string -> unit [@@js.set]
+  val set_has_screen_overlays: t -> bool -> unit [@@js.set]
+  val set_name: t -> string -> unit [@@js.set]
+  val set_snipper: t -> string -> unit [@@js.set]
 end
 
 module KmlLayerOptions: sig
@@ -1708,6 +2469,20 @@ module KmlLayerOptions: sig
     unit ->
     t
     [@@js.builder]
+  val clickable: t -> bool [@@js.get]
+  val map: t -> Map.t [@@js.get]
+  val preserve_viewport: t -> bool [@@js.get]
+  val screen_overlays: t -> bool [@@js.get]
+  val suppress_info_windows: t -> bool [@@js.get]
+  val url: t -> string [@@js.get]
+  val z_index: t -> int [@@js.get]
+  val set_clickable: t -> bool -> unit [@@js.set]
+  val set_map: t -> Map.t -> unit [@@js.set]
+  val set_preserve_viewport: t -> bool -> unit [@@js.set]
+  val set_screen_overlays: t -> bool -> unit [@@js.set]
+  val set_suppress_info_windows: t -> bool -> unit [@@js.set]
+  val set_url: t -> string -> unit [@@js.set]
+  val set_z_index: t -> int -> unit [@@js.set]
 end
 
 module KmlMouseEvent: sig
@@ -1719,6 +2494,12 @@ module KmlMouseEvent: sig
     unit ->
     t
     [@@js.builder]
+  val feature_data: t -> KmlFeatureData.t [@@js.get]
+  val lat_lng: t -> LatLng.t [@@js.get]
+  val pixel_offset: t -> Size.t [@@js.get]
+  val set_feature_data: t -> KmlFeatureData.t -> unit [@@js.set]
+  val set_lat_lng: t -> LatLng.t -> unit [@@js.set]
+  val set_pixel_offset: t -> Size.t -> unit [@@js.set]
 end
 
 module KmlLayer: sig
@@ -1728,7 +2509,7 @@ module KmlLayer: sig
   val get_default_viewport: t -> LatLngBounds.t [@@js.call]
   val get_map: t -> Map.t [@@js.call]
   val get_metadata: t -> KmlLayerMetadata.t [@@js.call]
-  val get_status: t -> KmlLayerStatus.t [@@js.call]
+  val get_status: t -> kml_layer_status [@@js.call]
   val get_url: t -> string [@@js.call]
   val get_z_zindex: t -> int [@@js.call]
   val set_map: t -> Map.t -> unit [@@js.call]
@@ -1740,19 +2521,23 @@ end
 (* End Kml *)
 
 (* MaxZoom *)
-module MaxZoomStatus: sig
-  type t
-    (* SUM TYPE *)
-end
+type max_zoom_status =
+  | Ok    [@js "OK"]
+  | Error [@js "ERROR"]
+  [@@ js.enum]
 
 module MaxZoomResult: sig
   type t
   val create:
-    ?status:MaxZoomStatus.t ->
+    ?status:max_zoom_status ->
     ?zoom:int ->
     unit ->
     t
     [@@js.builder]
+  val status: t -> max_zoom_status [@@js.get]
+  val zoom: t -> int [@@js.get]
+  val set_status: t -> max_zoom_status -> unit [@@js.set]
+  val set_zoom: t -> int -> unit [@@js.set]
 end
 
 module MaxZoomService: sig
@@ -1768,8 +2553,12 @@ end
 (* SearchBox *)
 module SearchBoxOptions: sig
   type t
-  val create: bounds:LatLngBounds.t -> t
+  val create:
+    bounds:LatLngBounds.t ->
+    t
     [@@js.builder]
+  val bounds: t -> LatLngBounds.t [@@js.get]
+  val set_bounds: t -> LatLngBounds.t -> unit [@@js.set]
 end
 
 module SearchBox: sig
@@ -1787,17 +2576,21 @@ end
 module StreetViewAddressControlOptions: sig
   type t
   val create:
-    position:ControlPosition.t ->
+    position:control_position ->
     t
     [@@js.builder]
+  val position: t -> control_position [@@js.get]
+  val set_position: t -> control_position -> unit [@@js.set]
 end
 
 module StreetViewControlOptions: sig
   type t
   val create:
-    position:ControlPosition.t ->
+    position:control_position ->
     t
     [@@js.builder]
+  val position: t -> control_position [@@js.get]
+  val set_position: t -> control_position -> unit [@@js.set]
 end
 
 module StreetViewLink: sig
@@ -1809,22 +2602,29 @@ module StreetViewLink: sig
     unit ->
     t
     [@@js.builder]
+  val description: t -> string [@@js.get]
+  val heading: t -> int [@@js.get]
+  val pano: t -> string [@@js.get]
+  val set_description: t -> string -> unit [@@js.set]
+  val set_heading: t -> int -> unit [@@js.set]
+  val set_pano: t -> string -> unit [@@js.set]
 end
 
-module StreetViewPreference: sig
-  type t
-    (* SUM TYPE *)
-end
+type street_view_preference =
+  | Nearest [@js "nearest"]
+  | Best [@js "best"]
+  [@@ js.enum]
 
-module StreetViewStatus: sig
-  type t
-    (* SUM TYPE *)
-end
+type street_view_status =
+  | Ok            [@js "OK"]
+  | Unknown_error [@js "UNKNOWN_ERROR"]
+  | Zero_results  [@js "ZERO_RESULTS"]
+  [@@ js.enum]
 
-module StreetViewSource: sig
-  type t
-    (* SUM TYPE *)
-end
+type street_view_source =
+  | Default [@js "default"]
+  | Outdoor [@js "outdoor"]
+  [@@ js.enum]
 
 module StreetViewLocation: sig
   type t
@@ -1836,6 +2636,14 @@ module StreetViewLocation: sig
     unit ->
     t
     [@@js.builder]
+  val description: t -> string [@@js.get]
+  val lat_lng: t -> LatLng.t [@@js.get]
+  val pano: t -> string [@@js.get]
+  val short_description: t -> string [@@js.get]
+  val set_description: t -> string -> unit [@@js.set]
+  val set_lat_lng: t -> LatLng.t -> unit [@@js.set]
+  val set_pano: t -> string -> unit [@@js.set]
+  val set_short_description: t -> string -> unit [@@js.set]
 end
 
 module StreetViewTileData: sig
@@ -1863,18 +2671,36 @@ module StreetViewPanoramaData: sig
     unit ->
     t
     [@@js.builder]
+  val copyright: t -> string [@@js.get]
+  val image_data: t -> string [@@js.get]
+  val links: t -> StreetViewLink.t list [@@js.get]
+  val location: t -> StreetViewLocation.t [@@js.get]
+  val tiles: t -> StreetViewTileData.t [@@js.get]
+  val set_copyright: t -> string -> unit [@@js.set]
+  val set_image_data: t -> string -> unit [@@js.set]
+  val set_links: t -> StreetViewLink.t list -> unit [@@js.set]
+  val set_location: t -> StreetViewLocation.t -> unit [@@js.set]
+  val set_tiles: t -> StreetViewTileData.t -> unit [@@js.set]
 end
 
 module StreetViewLocationRequest: sig
   type t
   val create:
     ?location:LatLng.t ->
-    ?preference:StreetViewPreference.t ->
+    ?preference:street_view_preference ->
     ?radius:float ->
-    ?source:StreetViewSource.t ->
+    ?source:street_view_source ->
     unit ->
     t
     [@@js.builder]
+  val location: t -> LatLng.t [@@js.get]
+  val preference: t -> street_view_preference [@@js.get]
+  val radius: t -> float [@@js.get]
+  val source: t -> street_view_source [@@js.get]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_preference: t -> street_view_preference -> unit [@@js.set]
+  val set_radius: t -> float -> unit [@@js.set]
+  val set_source: t -> street_view_source -> unit [@@js.set]
 end
 
 module StreetViewService: sig
@@ -1884,7 +2710,7 @@ module StreetViewService: sig
   val get_panorama:
     StreetViewLocationRequest.t ->
     (StreetViewPanoramaData.t ->
-     StreetViewStatus.t ->
+     street_view_status ->
     unit) ->
     unit
 end
@@ -1893,9 +2719,11 @@ end
 module PanControlOptions: sig
   type t
   val create:
-    position:ControlPosition.t ->
+    position:control_position ->
     t
     [@@js.builder]
+  val position: t -> control_position [@@js.get]
+  val set_position: t -> control_position -> unit [@@js.set]
 end
 
 module StreetViewPanoRequest: sig
@@ -1904,6 +2732,8 @@ module StreetViewPanoRequest: sig
     pano:string ->
     t
     [@@js.builder]
+  val pano: t -> string [@@js.get]
+  val set_pano: t -> string -> unit [@@js.set]
 end
 
 module StreetViewPov: sig
@@ -1913,6 +2743,10 @@ module StreetViewPov: sig
     pitch:int ->
     t
     [@@js.builder]
+  val heading: t -> int [@@js.get]
+  val pitch: t -> int [@@js.get]
+  val set_heading: t -> int -> unit [@@js.set]
+  val set_pitch: t -> int -> unit [@@js.set]
 end
 
 module StreetViewPanoramaOptions: sig
@@ -1941,6 +2775,49 @@ module StreetViewPanoramaOptions: sig
     unit ->
     t
     [@@js.builder]
+  val address_control: t -> bool [@@js.get]
+  val address_control_options: t -> StreetViewAddressControlOptions.t [@@js.get]
+  val click_to_go: t -> bool [@@js.get]
+  val disable_default_u_i: t -> bool [@@js.get]
+  val disable_double_click_zoom: t -> bool [@@js.get]
+  val enable_close_button: t -> bool [@@js.get]
+  val fullscreen_control: t -> bool [@@js.get]
+  val fullscreen_control_options: t -> FullscreenControlOptions.t [@@js.get]
+  val image_date_control: t -> bool [@@js.get]
+  val links_control: t -> bool [@@js.get]
+  val pan_control: t -> bool [@@js.get]
+  val pan_control_options: t -> PanControlOptions.t [@@js.get]
+  val pano: t -> string [@@js.get]
+(*  val pano_provider: t -> (string->StreetViewPanoramaData.t) [@@js.get]*)
+  val position: t -> LatLng.t [@@js.get]
+  val pov: t -> StreetViewPov.t [@@js.get]
+  val scrollwheel: t -> bool [@@js.get]
+  val visible: t -> bool [@@js.get]
+  val zoom_control: t -> bool [@@js.get]
+  val zoom_control_options: t -> ZoomControlOptions.t [@@js.get]
+  val set_address_control: t -> bool -> unit [@@js.set]
+  val set_address_control_options:
+    t -> StreetViewAddressControlOptions.t -> unit [@@js.set]
+  val set_click_to_go: t -> bool -> unit [@@js.set]
+  val set_disable_default_u_i: t -> bool -> unit [@@js.set]
+  val set_disable_double_click_zoom: t -> bool -> unit [@@js.set]
+  val set_enable_close_button: t -> bool -> unit [@@js.set]
+  val set_fullscreen_control: t -> bool -> unit [@@js.set]
+  val set_fullscreen_control_options:
+    t -> FullscreenControlOptions.t -> unit [@@js.set]
+  val set_image_date_control: t -> bool -> unit [@@js.set]
+  val set_links_control: t -> bool -> unit [@@js.set]
+  val set_pan_control: t -> bool -> unit [@@js.set]
+  val set_pan_control_options: t -> PanControlOptions.t -> unit [@@js.set]
+  val set_pano: t -> string -> unit [@@js.set]
+  val set_pano_provider:
+    t -> (string->StreetViewPanoramaData.t) -> unit [@@js.set]
+  val set_position: t -> LatLng.t -> unit [@@js.set]
+  val set_pov: t -> StreetViewPov.t -> unit [@@js.set]
+  val set_scrollwheel: t -> bool -> unit [@@js.set]
+  val set_visible: t -> bool -> unit [@@js.set]
+  val set_zoom_control: t -> bool -> unit [@@js.set]
+  val set_zoom_control_options: t -> ZoomControlOptions.t -> unit [@@js.set]
 end
 
 module StreetViewPanorama: sig
@@ -1956,7 +2833,7 @@ module StreetViewPanorama: sig
   val get_photographer_pov: t -> StreetViewPov.t [@@js.call]
   val get_position: t -> LatLng.t [@@js.call]
   val get_pov: t -> StreetViewPov.t [@@js.call]
-  val get_status: t -> StreetViewStatus.t [@@js.call]
+  val get_status: t -> street_view_status [@@js.call]
   val get_visible: t -> bool [@@js.call]
   val get_zoom: t -> int [@@js.call]
   val register_pano_provider:
@@ -1984,17 +2861,410 @@ end
 (* Rotation Control *)
 module RotateControlOptions: sig
   type t
-  val create: position:ControlPosition.t -> t [@@js.builder]
+  val create:
+    position:control_position ->
+    t
+    [@@js.builder]
+  val position: t -> control_position [@@js.get]
+  val set_position: t -> control_position -> unit [@@js.set]
 end
 (* End Rotation control *)
 
 (*Scale Control Style *)
-module ScaleControlStyle: sig
-  type t
-  (* SUM TYPE *)
-end
+type scale_control_style =
+  | Default [@js 0]
+  [@@ js.enum]
 
 module ScaleControlOptions: sig
   type t
-  val create: style:ScaleControlStyle.t -> t [@@js.builder]
+  val create:
+    style:scale_control_style ->
+    t
+    [@@js.builder]
+  val style: t -> scale_control_style [@@js.get]
+  val set_style: t -> scale_control_style -> unit [@@js.set]
 end
+(* End scale control style *)
+
+(* Ground overlay options *)
+module GroundOverlayOptions: sig
+  type t
+  val create:
+    ?clickable:bool ->
+    ?map:Map.t ->
+    ?opacity:float ->
+    unit ->
+    t
+    [@@js.builder]
+  val clickable: t -> bool [@@js.get]
+  val map: t -> Map.t [@@js.get]
+  val opacity: t -> float [@@js.get]
+  val set_clickable: t -> bool -> unit [@@js.set]
+  val set_map: t -> Map.t -> unit [@@js.set]
+  val set_opacity: t -> float -> unit [@@js.set]
+end
+
+module GroundOverlay: sig
+  type t
+  val new_ground_overlay:
+    url:string ->
+    bounds:LatLngBounds.t ->
+    ?opts:GroundOverlayOptions.t ->
+    unit ->
+    t [@@js.new]
+  val get_bounds: t -> LatLngBounds.t
+  val get_map: t -> Map.t
+  val get_opacity: t -> float
+  val get_url: t -> string
+  val set_map: t -> Map.t -> unit
+  val set_opacity: t -> float -> unit
+end
+[@js.scope "google.maps"]
+(* End Ground overlay *)
+
+(* HeatmapLayer *)
+module HeatmapLayerOptions: sig
+  type t
+  val create:
+    (* LatLng MVCArray *)
+    ?data:MVCArray.t ->
+    ?dissipating:bool ->
+    ?gradient:string list ->
+    ?map:Map.t ->
+    ?max_intensity:float ->
+    ?opacity:float ->
+    ?radius:float ->
+    unit ->
+    t
+    [@@js.builder]
+  val data: t -> MVCArray.t [@@js.get]
+  val dissipating: t -> bool [@@js.get]
+  val gradient: t -> string list [@@js.get]
+  val map: t -> Map.t [@@js.get]
+  val max_intensity: t -> float [@@js.get]
+  val opacity: t -> float [@@js.get]
+  val radius: t -> float [@@js.get]
+  val set_data: t -> MVCArray.t -> unit [@@js.set]
+  val set_dissipating: t -> bool -> unit [@@js.set]
+  val set_gradient: t -> string list -> unit [@@js.set]
+  val set_map: t -> Map.t -> unit [@@js.set]
+  val set_max_intensity: t -> float -> unit [@@js.set]
+  val set_opacity: t -> float -> unit [@@js.set]
+  val set_radius: t -> float -> unit [@@js.set]
+end
+
+module HeatmapLayer: sig
+  type t
+  val new_heatmap_layer:
+    ?opts:HeatmapLayerOptions.t ->
+    unit ->
+    t [@@js.new]
+  val get_data: t -> MVCArray.t [@@js.call]
+  val get_map: t -> Map.t [@@js.call]
+  val set_data: t -> LatLng.t list [@@js.call]
+  val set_map: t -> Map.t -> unit [@@js.call]
+  val set_options: t -> HeatmapLayerOptions.t -> unit [@@js.call]
+end
+[@js.scope "google.maps.visualization"]
+(* End HeatMapLayer *)
+
+
+(* ImageMap *)
+module ImageMapTypeOptions: sig
+  type t
+  val create:
+    ?alt:string ->
+    ?get_tile_url:(Point.t -> int -> string) ->
+    ?max_zoom:int ->
+    ?min_zoom:int ->
+    ?name:string ->
+    ?opacity:float ->
+    ?tile_size:Size.t ->
+    unit ->
+    t
+    [@@js.builder]
+  val alt: t -> string [@@js.get]
+(*  val get_tile_url: t -> unit -> (Point.t -> int -> string) [@@js.get]*)
+  val max_zoom: t -> int [@@js.get]
+  val min_zoom: t -> int [@@js.get]
+  val name: t -> string [@@js.get]
+  val opacity: t -> float [@@js.get]
+  val tile_size: t -> Size.t [@@js.get]
+  val set_alt: t -> string -> unit [@@js.set]
+  val set_get_tile_url: t -> (Point.t -> int -> string) -> unit [@@js.set]
+  val set_max_zoom: t -> int -> unit [@@js.set]
+  val set_min_zoom: t -> int -> unit [@@js.set]
+  val set_name: t -> string -> unit [@@js.set]
+  val set_opacity: t -> float -> unit [@@js.set]
+  val set_tile_size: t -> Size.t -> unit [@@js.set]
+end
+
+module ImageMapType: sig
+  type t
+  val new_image_map_type:
+    opts:ImageMapTypeOptions.t -> t [@@js.new]
+  val get_opacity: t -> float [@@js.call]
+  (* Should take Document, not Document.t *)
+  val get_tile: t -> Point.t -> int -> Document.t -> unit [@@js.call]
+  (* Takes Node (Document.t ?) *)
+  val release_tile: t -> Ojs.t -> unit [@@js.call]
+  val set_opacity: t -> float -> t [@@js.call]
+
+  (*** Attributes ***)
+end
+[@js.scope "google.maps"]
+(* End ImageMap *)
+
+(* Map Type *)
+
+module MapTypeControlOptions: sig
+  type t
+  val create:
+    ?map_type_ids:map_types list ->
+    ?position:control_position ->
+    ?style:map_type_control_style ->
+    unit ->
+    t
+    [@@js.builder]
+  val map_type_ids: t -> map_types list [@@js.get]
+  val position: t -> control_position [@@js.get]
+  val style: t -> map_type_control_style [@@js.get]
+  val set_map_type_ids: t -> map_types list -> unit [@@js.set]
+  val set_position: t -> control_position -> unit [@@js.set]
+  val set_style: t -> map_type_control_style -> unit [@@js.set]
+end
+
+module MapTypeStyleElementType: sig
+  type t
+    (* SUM TYPE ! *)
+end
+
+module MapTypeStyleFeatureType: sig
+  type t
+    (* SUM TYPE ! *)
+end
+
+module MapTypeRegistry: sig
+  type t
+  val new_map_type_registry: unit -> t [@@js.new]
+  val set: t -> id:string -> map_type:map_types option -> unit [@@js.call]
+end
+[@js.scope "google.maps"]
+
+module MapTypeStyle: sig
+  type t
+  val create:
+    ?element_type:MapTypeStyleElementType.t ->
+    ?feature_type:MapTypeStyleFeatureType.t ->
+    ?stylers:MapTypeStyler.t list ->
+    unit ->
+    t
+    [@@js.builder]
+  val element_type: t -> MapTypeStyleElementType.t [@@js.get]
+  val feature_type: t -> MapTypeStyleFeatureType.t [@@js.get]
+  val stylers: t -> MapTypeStyler.t list [@@js.get]
+  val set_element_type:
+    t -> MapTypeStyleElementType.t -> unit [@@js.set]
+  val set_feature_type:
+    t -> MapTypeStyleFeatureType.t -> unit [@@js.set]
+  val set_stylers: t -> MapTypeStyler.t list -> unit [@@js.set]
+end
+
+module MapType: sig
+  type t
+  val new_map_type: unit -> t [@@js.new]
+  val get_tile:
+    t -> tile_coord:Point.t -> zoom:int -> Document.t -> unit [@@js.call]
+  (** Node **)
+  val release_tile: t -> Ojs.t -> unit [@@js.call]
+end
+[@js.scope "google.maps"]
+
+module MapPanes: sig
+  type t
+  (** Only Element **)
+  val create:
+    ?float_pane:Document.t ->
+    ?map_pane:Document.t ->
+    ?marker_layer:Document.t ->
+    ?overlay_layer:Document.t ->
+    ?overlay_mouse_target:Document.t ->
+    unit ->
+    t
+    [@@js.builder]
+  val float_pane: t -> Document.t [@@js.get]
+  val map_pane: t -> Document.t [@@js.get]
+  val marker_layer: t -> Document.t [@@js.get]
+  val overlay_layer: t -> Document.t [@@js.get]
+  val overlay_mouse_target: t -> Document.t [@@js.get]
+  val set_float_pane: t -> Document.t -> unit [@@js.set]
+  val set_map_pane: t -> Document.t -> unit [@@js.set]
+  val set_marker_layer: t -> Document.t -> unit [@@js.set]
+  val set_overlay_layer: t -> Document.t -> unit [@@js.set]
+  val set_overlay_mouse_target: t -> Document.t -> unit [@@js.set]
+end
+
+module StyledMapTypeOptions: sig
+  type t
+  val create:
+    ?alt:string ->
+    ?max_zoom:int ->
+    ?min_zoom:int ->
+    ?name:string ->
+    unit ->
+    t
+    [@@js.builder]
+  val alt: t -> string [@@js.get]
+  val max_zoom: t -> int [@@js.get]
+  val min_zoom: t -> int [@@js.get]
+  val name: t -> string [@@js.get]
+  val set_alt: t -> string -> unit [@@js.set]
+  val set_max_zoom: t -> int -> unit [@@js.set]
+  val set_min_zoom: t -> int -> unit [@@js.set]
+  val set_name: t -> string -> unit [@@js.set]
+end
+
+module StyledMapType: sig
+  type t
+  val new_styled_map_type:
+    MapTypeStyle.t -> ?opts:StyledMapTypeOptions.t -> unit -> t [@@js.new]
+  val alt: t -> string [@@js.get]
+  val max_zoom: t -> int [@@js.get]
+  val min_zoom: t -> int [@@js.get]
+  val name: t -> string [@@js.get]
+  val projection: t -> Projection.t [@@js.get]
+  val radius: t -> float [@@js.get]
+  val tile_size: t -> Size.t [@@js.get]
+  val set_alt: t -> string -> unit [@@js.set]
+  val set_max_zoom: t -> int -> unit [@@js.set]
+  val set_min_zoom: t -> int -> unit [@@js.set]
+  val set_name: t -> string -> unit [@@js.set]
+  val set_projection: t -> Projection.t -> unit [@@js.set]
+  val set_radius: t -> float -> unit [@@js.set]
+  val set_tile_size: t -> Size.t -> unit [@@js.set]
+end
+  [@js.scope "google.maps"]
+(* End Map Type *)
+
+(* Overlay *)
+module OverlayCompleteEvent: sig
+  type t
+  val create:
+    (* WARNING : Not Ojs.t but shapes *)
+    ?overlay:Ojs.t ->
+    ?type':overlay_type ->
+    unit ->
+    t
+    [@@js.builder]
+end
+
+module OverlayView: sig
+  type t
+  val new_overlay_view: unit -> t [@@js.new]
+  val draw: t -> unit [@@js.call]
+  val get_map: t -> Map.t [@@js.call]
+  val get_panes: t -> MapPanes.t [@@js.call]
+  val get_projection: t -> MapCanvasProjection.t [@@js.call]
+  val on_add: t -> unit [@@js.call]
+  val on_remove: t -> unit [@@js.call]
+  val set_map: t -> Map.t -> unit [@@js.call]
+end
+[@js.scope "google.maps"]
+(* End Overlay *)
+
+(* Save *)
+module SaveWidgetOptions: sig
+  type t
+  val create:
+    ?attribution:Attribution.t ->
+    ?place:MarkerPlace.t ->
+    unit ->
+    t
+    [@@js.builder]
+  val attribution: t -> Attribution.t [@@js.get]
+  val place: t -> MarkerPlace.t [@@js.get]
+  val set_attribution: t -> Attribution.t -> unit [@@js.set]
+  val set_place: t -> MarkerPlace.t -> unit [@@js.set]
+end
+
+module SaveWidget: sig
+  (* MVCObject *)
+  type t
+  val new_save_widget :
+    Ojs.t -> ?opts:SaveWidgetOptions.t -> unit -> t [@@js.new]
+  val get_attribution: t -> Attribution.t [@@js.call]
+  val get_place: t -> MarkerPlace.t [@@js.call]
+  val set_attribution: t -> Attribution.t -> unit [@@js.call]
+  val set_options: t -> SaveWidgetOptions.t -> unit [@@js.call]
+  val set_place: t -> MarkerPlace.t -> unit [@@js.call]
+end
+  [@js.scope "google.maps"]
+(* End save *)
+
+
+(* Traffic Layer *)
+module TrafficLayerOptions: sig
+  type t
+  val create:
+    map:Map.t ->
+    t
+    [@@js.builder]
+  val map: t -> Map.t [@@js.get]
+  val set_map: t -> Map.t -> unit [@@js.set]
+end
+
+module TrafficLayer: sig
+  type t
+  val new_traffic_layer:
+    ?opts:TrafficLayerOptions.t -> unit -> t [@@js.new]
+  val get_map: t -> Map.t [@@js.call]
+  val set_map: t -> Map.t -> unit [@@js.call]
+  val set_options: t -> TrafficLayerOptions.t -> unit [@@js.call]
+end
+  [@js.scope "google.maps"]
+(* End Traffic Layer *)
+
+(* Data *)
+(*module Data: sig
+
+  type styling_function = Feature.t -> StyleOptions.t
+
+  module Geometry: sig
+    type t
+    val get_type: t -> string [@@js.call]
+  end
+
+  module DataOptions: sig
+    type t
+    val create:
+      ?control_position:control_position ->
+      ?controls:string list ->
+      ?drawing_mode:string ->
+      ?feature_factory:(Geometry.t -> Feature.t) ->
+      ?map:Map.t ->
+      ?style:styling_function ->
+      unit ->
+      t
+      [@@js.builder]
+  end
+
+  type t
+  val new_data: ?opts:DataOptions.t -> t [@@js.new]
+end
+  [@js.scope "google.maps"] *)
+(* End data *)
+
+(* Namespaces *)
+module Encoding: sig
+  val decode_path: string -> LatLng.t list [@@js.global]
+  val encode_path: LatLng.t list -> string [@@js.global]
+end
+[@js.scope "google.maps.geometry.encoding"]
+
+module Spherical: sig
+  val compute_area: LatLng.t -> ?radius:float -> unit -> float [@@js.global]
+  val compute_distance_between:
+    LatLng.t -> LatLng.t -> ?radius:float -> unit -> float [@@js.global]
+end
+[@js.scope "google.maps.geometry.spherical"]
+(* End Namespaces *)
