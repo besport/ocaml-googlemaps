@@ -1,4 +1,4 @@
-(************* Temporary ************)
+(************* Core ************)
 module Console: sig
   type t
   val log : string -> unit [@@js.global]
@@ -11,6 +11,70 @@ module Document: sig
 end
 [@js.scope "document"]
 
+module Date: sig
+  type t
+  val new_date :
+    ?year:int ->
+    ?month:int ->
+    ?day:int ->
+    ?hours:int ->
+    ?minutes:int ->
+    ?seconds:int ->
+    ?milliseconds:int ->
+    ?date_string:string ->
+    unit ->
+    t [@@js.new]
+  val get_date : t -> int [@@js.call]
+  val get_day : t -> int [@@js.call]
+  val get_full_year : t -> int [@@js.call]
+  val get_hours : t -> int [@@js.call]
+  val get_milliseconds : t -> int [@@js.call]
+  val get_minutes : t -> int [@@js.call]
+  val get_month : t -> int [@@js.call]
+  val get_seconds : t -> int [@@js.call]
+  val get_time : t -> int [@@js.call]
+  val get_timezone_offset : t -> int [@@js.call]
+  val get_utc_date : t -> int [@@js.call "getUTCDate"]
+  val get_utc_day : t -> int [@@js.call "getUTCDay"]
+  val get_utc_full_year : t -> int [@@js.call "getUTCFullYear"]
+  val get_utc_hours : t -> int [@@js.call "getUTCHours"]
+  val get_utc_milliseconds : t -> int [@@js.call "getUTCMilliseconds"]
+  val get_utc_minutes : t -> int [@@js.call "getUTCMinutes"]
+  val get_utc_month : t -> int [@@js.call "getUTCMonth"]
+  val get_utc_seconds : t -> int [@@js.call "getUTCSeconds"]
+  val get_full_year : t -> int [@@js.call]
+  val set_date : t -> int -> unit [@@js.call]
+  val set_full_year : t -> int -> unit [@@js.call]
+  val set_hours : t -> int -> unit [@@js.call]
+  val set_milliseconds : t -> int -> unit [@@js.call]
+  val set_minutes : t -> int -> unit [@@js.call]
+  val set_month : t -> int -> unit [@@js.call]
+  val set_seconds : t -> int -> unit [@@js.call]
+  val set_time : t -> int -> unit [@@js.call]
+  val set_utc_date : t -> int -> unit [@@js.call "setUTCDate"]
+  val set_utc_full_year : t -> int -> unit [@@js.call "setUTCFullYear"]
+  val set_utc_hours : t -> int -> unit [@@js.call "setUTCHours"]
+  val set_utc_milliseconds : t -> int -> unit [@@js.call "setUTCMilliseconds"]
+  val set_utc_minutes : t -> int -> unit [@@js.call "setUTCMinutes"]
+  val set_utc_month : t -> int -> unit [@@js.call "setUTCMonth"]
+  val set_utc_seconds : t -> int -> unit [@@js.call "setUTCSeconds"]
+  val set_full_year : t -> int -> unit [@@js.call]
+  val to_date_string : t -> string [@@js.call]
+  val to_utc_string : t -> string [@@js.call "toUTCString"]
+  val to_iso_string : t -> string [@@js.call "toISOString"]
+  val to_json : t -> string [@@js.call "toJSON"]
+  val to_locale_date_string : t -> string [@@js.call]
+  val to_locale_time_string : t -> string [@@js.call]
+  val to_locale_string : t -> string [@@js.call]
+  val to_string : t -> string [@@js.call]
+  val to_time_string : t -> string [@@js.call]
+  val to_utc_string : t -> string [@@js.call"toUTCString"]
+  val value_of : t -> int [@@js.call]
+
+  val now : unit -> int [@@js.global "Date.now"]
+  val parse : string -> int [@@js.global "Date.parse"]
+  val utc : int-> int -> int -> int [@@js.global "Date.UTC"]
+end
 (************************************)
 type travel_mode =
   | Driving   [@js "DRIVING"]
@@ -239,6 +303,309 @@ end
 [@js.scope "google.maps"]
 
 (* Map *)
+
+(* Zoom *)
+module ZoomControlOptions: sig
+  type t
+  val create:
+    position:control_position ->
+    t
+    [@@js.builder]
+  val position: t -> control_position [@@js.get]
+  val set_position: t -> control_position -> unit [@@js.set]
+end
+(* End zoom *)
+
+(* Fullscreen *)
+module FullscreenControlOptions: sig
+  type t
+  val create:
+    position:control_position ->
+    t
+    [@@js.builder]
+  val position: t -> control_position [@@js.get]
+  val set_position: t -> control_position -> unit [@@js.set]
+end
+(* End Fullscreen *)
+
+(* Streetview *)
+module StreetViewAddressControlOptions: sig
+  type t
+  val create:
+    position:control_position ->
+    t
+    [@@js.builder]
+  val position: t -> control_position [@@js.get]
+  val set_position: t -> control_position -> unit [@@js.set]
+end
+
+module StreetViewControlOptions: sig
+  type t
+  val create:
+    position:control_position ->
+    t
+    [@@js.builder]
+  val position: t -> control_position [@@js.get]
+  val set_position: t -> control_position -> unit [@@js.set]
+end
+
+module StreetViewLink: sig
+  type t
+  val create:
+    ?description:string ->
+    ?heading:int ->
+    ?pano:string ->
+    unit ->
+    t
+    [@@js.builder]
+  val description: t -> string [@@js.get]
+  val heading: t -> int [@@js.get]
+  val pano: t -> string [@@js.get]
+  val set_description: t -> string -> unit [@@js.set]
+  val set_heading: t -> int -> unit [@@js.set]
+  val set_pano: t -> string -> unit [@@js.set]
+end
+
+type street_view_preference =
+  | Nearest [@js "nearest"]
+  | Best [@js "best"]
+  [@@ js.enum]
+
+type street_view_status =
+  | Ok            [@js "OK"]
+  | Unknown_error [@js "UNKNOWN_ERROR"]
+  | Zero_results  [@js "ZERO_RESULTS"]
+  [@@ js.enum]
+
+type street_view_source =
+  | Default [@js "default"]
+  | Outdoor [@js "outdoor"]
+  [@@ js.enum]
+
+module StreetViewLocation: sig
+  type t
+  val create:
+    ?description:string ->
+    ?lat_lng:LatLng.t ->
+    ?pano:string ->
+    short_description:string ->
+    unit ->
+    t
+    [@@js.builder]
+  val description: t -> string [@@js.get]
+  val lat_lng: t -> LatLng.t [@@js.get]
+  val pano: t -> string [@@js.get]
+  val short_description: t -> string [@@js.get]
+  val set_description: t -> string -> unit [@@js.set]
+  val set_lat_lng: t -> LatLng.t -> unit [@@js.set]
+  val set_pano: t -> string -> unit [@@js.set]
+  val set_short_description: t -> string -> unit [@@js.set]
+end
+
+module StreetViewTileData: sig
+  type t
+  val new_street_view_tile_data: unit -> t [@@js.new]
+  val get_tile_url:
+    t ->
+    pano:string ->
+    tile_zoom:int ->
+    tile_x:int ->
+    tile_y:int ->
+    string
+    [@@js.call]
+end
+[@ js.scope "google.maps"]
+
+module StreetViewPanoramaData: sig
+  type t
+  val create:
+    ?copyright:string ->
+    ?image_data:string ->
+    ?links:StreetViewLink.t list ->
+    ?location:StreetViewLocation.t ->
+    ?tiles:StreetViewTileData.t ->
+    unit ->
+    t
+    [@@js.builder]
+  val copyright: t -> string [@@js.get]
+  val image_data: t -> string [@@js.get]
+  val links: t -> StreetViewLink.t list [@@js.get]
+  val location: t -> StreetViewLocation.t [@@js.get]
+  val tiles: t -> StreetViewTileData.t [@@js.get]
+  val set_copyright: t -> string -> unit [@@js.set]
+  val set_image_data: t -> string -> unit [@@js.set]
+  val set_links: t -> StreetViewLink.t list -> unit [@@js.set]
+  val set_location: t -> StreetViewLocation.t -> unit [@@js.set]
+  val set_tiles: t -> StreetViewTileData.t -> unit [@@js.set]
+end
+
+module StreetViewLocationRequest: sig
+  type t
+  val create:
+    ?location:LatLng.t ->
+    ?preference:street_view_preference ->
+    ?radius:float ->
+    ?source:street_view_source ->
+    unit ->
+    t
+    [@@js.builder]
+  val location: t -> LatLng.t [@@js.get]
+  val preference: t -> street_view_preference [@@js.get]
+  val radius: t -> float [@@js.get]
+  val source: t -> street_view_source [@@js.get]
+  val set_location: t -> LatLng.t -> unit [@@js.set]
+  val set_preference: t -> street_view_preference -> unit [@@js.set]
+  val set_radius: t -> float -> unit [@@js.set]
+  val set_source: t -> street_view_source -> unit [@@js.set]
+end
+
+module StreetViewService: sig
+  type t
+  val new_street_view_service:
+    unit -> t [@@js.new]
+  val get_panorama:
+    StreetViewLocationRequest.t ->
+    (StreetViewPanoramaData.t ->
+     street_view_status ->
+    unit) ->
+    unit
+end
+[@ js.scope "google.maps"]
+
+module PanControlOptions: sig
+  type t
+  val create:
+    position:control_position ->
+    t
+    [@@js.builder]
+  val position: t -> control_position [@@js.get]
+  val set_position: t -> control_position -> unit [@@js.set]
+end
+
+module StreetViewPanoRequest: sig
+  type t
+  val create:
+    pano:string ->
+    t
+    [@@js.builder]
+  val pano: t -> string [@@js.get]
+  val set_pano: t -> string -> unit [@@js.set]
+end
+
+module StreetViewPov: sig
+  type t
+  val create:
+    heading:int ->
+    pitch:int ->
+    t
+    [@@js.builder]
+  val heading: t -> int [@@js.get]
+  val pitch: t -> int [@@js.get]
+  val set_heading: t -> int -> unit [@@js.set]
+  val set_pitch: t -> int -> unit [@@js.set]
+end
+
+module StreetViewPanoramaOptions: sig
+  type t
+  val create:
+    ?address_control:bool ->
+    ?address_control_options:StreetViewAddressControlOptions.t ->
+    ?click_to_go:bool ->
+    ?disable_default_u_i:bool ->
+    ?disable_double_click_zoom:bool ->
+    ?enable_close_button:bool ->
+    ?fullscreen_control:bool ->
+    ?fullscreen_control_options:FullscreenControlOptions.t ->
+    ?image_date_control:bool ->
+    ?links_control:bool ->
+    ?pan_control:bool ->
+    ?pan_control_options:PanControlOptions.t ->
+    ?pano:string ->
+    ?pano_provider:(string->StreetViewPanoramaData.t) ->
+    ?position:LatLng.t ->
+    ?pov:StreetViewPov.t ->
+    ?scrollwheel:bool ->
+    ?visible:bool ->
+    ?zoom_control:bool ->
+    ?zoom_control_options:ZoomControlOptions.t ->
+    unit ->
+    t
+    [@@js.builder]
+  val address_control: t -> bool [@@js.get]
+  val address_control_options: t -> StreetViewAddressControlOptions.t [@@js.get]
+  val click_to_go: t -> bool [@@js.get]
+  val disable_default_u_i: t -> bool [@@js.get]
+  val disable_double_click_zoom: t -> bool [@@js.get]
+  val enable_close_button: t -> bool [@@js.get]
+  val fullscreen_control: t -> bool [@@js.get]
+  val fullscreen_control_options: t -> FullscreenControlOptions.t [@@js.get]
+  val image_date_control: t -> bool [@@js.get]
+  val links_control: t -> bool [@@js.get]
+  val pan_control: t -> bool [@@js.get]
+  val pan_control_options: t -> PanControlOptions.t [@@js.get]
+  val pano: t -> string [@@js.get]
+(*  val pano_provider: t -> (string->StreetViewPanoramaData.t) [@@js.get]*)
+  val position: t -> LatLng.t [@@js.get]
+  val pov: t -> StreetViewPov.t [@@js.get]
+  val scrollwheel: t -> bool [@@js.get]
+  val visible: t -> bool [@@js.get]
+  val zoom_control: t -> bool [@@js.get]
+  val zoom_control_options: t -> ZoomControlOptions.t [@@js.get]
+  val set_address_control: t -> bool -> unit [@@js.set]
+  val set_address_control_options:
+    t -> StreetViewAddressControlOptions.t -> unit [@@js.set]
+  val set_click_to_go: t -> bool -> unit [@@js.set]
+  val set_disable_default_u_i: t -> bool -> unit [@@js.set]
+  val set_disable_double_click_zoom: t -> bool -> unit [@@js.set]
+  val set_enable_close_button: t -> bool -> unit [@@js.set]
+  val set_fullscreen_control: t -> bool -> unit [@@js.set]
+  val set_fullscreen_control_options:
+    t -> FullscreenControlOptions.t -> unit [@@js.set]
+  val set_image_date_control: t -> bool -> unit [@@js.set]
+  val set_links_control: t -> bool -> unit [@@js.set]
+  val set_pan_control: t -> bool -> unit [@@js.set]
+  val set_pan_control_options: t -> PanControlOptions.t -> unit [@@js.set]
+  val set_pano: t -> string -> unit [@@js.set]
+  val set_pano_provider:
+    t -> (string->StreetViewPanoramaData.t) -> unit [@@js.set]
+  val set_position: t -> LatLng.t -> unit [@@js.set]
+  val set_pov: t -> StreetViewPov.t -> unit [@@js.set]
+  val set_scrollwheel: t -> bool -> unit [@@js.set]
+  val set_visible: t -> bool -> unit [@@js.set]
+  val set_zoom_control: t -> bool -> unit [@@js.set]
+  val set_zoom_control_options: t -> ZoomControlOptions.t -> unit [@@js.set]
+end
+
+module StreetViewPanorama: sig
+  type t
+  val new_street_view_panorama:
+    container:Document.t ->
+    ?opts:StreetViewPanoramaOptions.t ->
+    unit ->
+    t [@@js.new]
+  val get_links: t -> StreetViewLink.t list [@@js.call]
+  val get_location: t -> StreetViewLocation.t [@@js.call]
+  val get_pano: t -> string [@@js.call]
+  val get_photographer_pov: t -> StreetViewPov.t [@@js.call]
+  val get_position: t -> LatLng.t [@@js.call]
+  val get_pov: t -> StreetViewPov.t [@@js.call]
+  val get_status: t -> street_view_status [@@js.call]
+  val get_visible: t -> bool [@@js.call]
+  val get_zoom: t -> int [@@js.call]
+  val register_pano_provider:
+    (string->StreetViewPanoramaData.t) -> unit [@@js.call]
+  val set_links: t -> StreetViewLink.t list -> unit [@@js.call]
+  val set_options:
+    t -> StreetViewPanoramaOptions.t -> unit [@@js.call]
+  val set_pano: t -> string -> unit [@@js.call]
+  val set_position: t -> LatLng.t -> unit [@@js.call]
+  val set_pov: t -> StreetViewPov.t -> unit [@@js.call]
+  val set_visible: t -> bool -> unit [@@js.call]
+  val set_zoom: t -> int -> unit [@@js.call]
+end
+  [@js.scope "google.maps"]
+(* End streetview *)
+
 module MapOptions: sig
   type t
   val create :
@@ -348,7 +715,7 @@ module Map: sig
   val set_clickable_icons : t -> bool -> unit [@@js.call]
   val set_heading : t -> float -> unit [@@js.call]
   val set_options : t -> MapOptions.t [@@js.call]
-  (* val set_street_view : t -> StreetViewPanorama.t *)
+  val set_street_view : t -> StreetViewPanorama.t
   val set_tilt : t -> float -> unit [@@js.call]
   val set_zoom : t -> int -> unit [@@js.call]
   (** Attributes need getter and setter **)
@@ -363,6 +730,15 @@ module Map: sig
   (** Added for polymorphism **)
   val t_to_js : t -> Ojs.t
   val t_of_js : Ojs.t -> t
+end
+[@js.scope "google.maps"]
+
+
+module StreetViewCoverageLayer: sig
+  type t
+  val new_street_view_coverage_layer: unit -> t [@@js.new]
+  val get_map: t -> Map.t [@@js.call]
+  val set_map: t -> Map.t -> unit [@@js.call]
 end
 [@js.scope "google.maps"]
 
@@ -1160,11 +1536,17 @@ module Time: sig
   val create:
     ?text:string ->
     ?time_zone:string ->
-    (*?value:Date.t ->*)
+    ?value:Date.t->
     unit ->
     t
     [@@js.verbatim_names]
     [@@js.builder]
+  val text: t -> string  [@@js.verbatim_names]
+  val time_zone: t -> string  [@@js.verbatim_names]
+  val value: t -> Date.t [@@js.verbatim_names]
+  val set_text: t -> string -> unit [@@js.verbatim_names]
+  val set_time_zone: t -> string -> unit [@@js.verbatim_names]
+  val set_value: t -> Date.t-> unit [@@js.verbatim_names]
 end
 
 module Duration: sig
@@ -1551,18 +1933,24 @@ module TransitLayer: sig
 end
 [@js.scope "google.maps"]
 
-(* WARNING DATA JS NOT DONE *)
 module TransitOptions: sig
   type t
   val create:
-    (* Ojs.t = Data (JS) *)
-    ?arrival_time:Ojs.t ->
-    ?departure_time:Ojs.t ->
+    ?arrival_time:Date.t ->
+    ?departure_time:Date.t ->
     ?modes:transit_mode list ->
     ?routing_preference:transit_route_preference ->
     unit ->
     t
     [@@js.builder]
+  val arrival_time: t -> Date.t
+  val departure_time: t -> Date.t
+  val modes: t -> transit_mode list
+  val routing_preference: t -> transit_route_preference
+  val set_arrival_time: t -> Date.t -> unit
+  val set_departure_time: t -> Date.t -> unit
+  val set_modes: t -> transit_mode list -> unit
+  val set_routing_preference: t -> transit_route_preference -> unit
 end
 (* End transit *)
 
@@ -1570,8 +1958,7 @@ end
 module DrivingOptions: sig
   type t
   val create:
-    (** Ojs.t = Date (JS) **)
-    ?departure_time:Ojs.t ->
+    ?departure_time:Date.t ->
     ?traffic_model:traffic_model ->
     unit ->
     t
@@ -2311,19 +2698,6 @@ end
 [@js.scope "google.map.drawing"]
 (* End drawing *)
 
-(* Zoom *)
-module ZoomControlOptions: sig
-  type t
-  val create:
-    position:control_position ->
-    t
-    [@@js.builder]
-  val position: t -> control_position [@@js.get]
-  val set_position: t -> control_position -> unit [@@js.set]
-end
-(* End zoom *)
-
-
 module WeightedLocation: sig
   type t
   val create:
@@ -2407,18 +2781,6 @@ module ElevationService: sig
 end
   [@js.scope "google.maps"]
 (* End Elevation *)
-
-(* Fullscreen *)
-module FullscreenControlOptions: sig
-  type t
-  val create:
-    position:control_position ->
-    t
-    [@@js.builder]
-  val position: t -> control_position [@@js.get]
-  val set_position: t -> control_position -> unit [@@js.set]
-end
-(* End Fullscreen *)
 
 (* Fusion *)
 module FusionTablesCell: sig
@@ -2774,291 +3136,6 @@ end
 [@js.scope "google.maps.places"]
 (* End searchbox *)
 
-(* Streetview *)
-module StreetViewAddressControlOptions: sig
-  type t
-  val create:
-    position:control_position ->
-    t
-    [@@js.builder]
-  val position: t -> control_position [@@js.get]
-  val set_position: t -> control_position -> unit [@@js.set]
-end
-
-module StreetViewControlOptions: sig
-  type t
-  val create:
-    position:control_position ->
-    t
-    [@@js.builder]
-  val position: t -> control_position [@@js.get]
-  val set_position: t -> control_position -> unit [@@js.set]
-end
-
-module StreetViewLink: sig
-  type t
-  val create:
-    ?description:string ->
-    ?heading:int ->
-    ?pano:string ->
-    unit ->
-    t
-    [@@js.builder]
-  val description: t -> string [@@js.get]
-  val heading: t -> int [@@js.get]
-  val pano: t -> string [@@js.get]
-  val set_description: t -> string -> unit [@@js.set]
-  val set_heading: t -> int -> unit [@@js.set]
-  val set_pano: t -> string -> unit [@@js.set]
-end
-
-type street_view_preference =
-  | Nearest [@js "nearest"]
-  | Best [@js "best"]
-  [@@ js.enum]
-
-type street_view_status =
-  | Ok            [@js "OK"]
-  | Unknown_error [@js "UNKNOWN_ERROR"]
-  | Zero_results  [@js "ZERO_RESULTS"]
-  [@@ js.enum]
-
-type street_view_source =
-  | Default [@js "default"]
-  | Outdoor [@js "outdoor"]
-  [@@ js.enum]
-
-module StreetViewLocation: sig
-  type t
-  val create:
-    ?description:string ->
-    ?lat_lng:LatLng.t ->
-    ?pano:string ->
-    short_description:string ->
-    unit ->
-    t
-    [@@js.builder]
-  val description: t -> string [@@js.get]
-  val lat_lng: t -> LatLng.t [@@js.get]
-  val pano: t -> string [@@js.get]
-  val short_description: t -> string [@@js.get]
-  val set_description: t -> string -> unit [@@js.set]
-  val set_lat_lng: t -> LatLng.t -> unit [@@js.set]
-  val set_pano: t -> string -> unit [@@js.set]
-  val set_short_description: t -> string -> unit [@@js.set]
-end
-
-module StreetViewTileData: sig
-  type t
-  val new_street_view_tile_data: unit -> t [@@js.new]
-  val get_tile_url:
-    t ->
-    pano:string ->
-    tile_zoom:int ->
-    tile_x:int ->
-    tile_y:int ->
-    string
-    [@@js.call]
-end
-[@ js.scope "google.maps"]
-
-module StreetViewPanoramaData: sig
-  type t
-  val create:
-    ?copyright:string ->
-    ?image_data:string ->
-    ?links:StreetViewLink.t list ->
-    ?location:StreetViewLocation.t ->
-    ?tiles:StreetViewTileData.t ->
-    unit ->
-    t
-    [@@js.builder]
-  val copyright: t -> string [@@js.get]
-  val image_data: t -> string [@@js.get]
-  val links: t -> StreetViewLink.t list [@@js.get]
-  val location: t -> StreetViewLocation.t [@@js.get]
-  val tiles: t -> StreetViewTileData.t [@@js.get]
-  val set_copyright: t -> string -> unit [@@js.set]
-  val set_image_data: t -> string -> unit [@@js.set]
-  val set_links: t -> StreetViewLink.t list -> unit [@@js.set]
-  val set_location: t -> StreetViewLocation.t -> unit [@@js.set]
-  val set_tiles: t -> StreetViewTileData.t -> unit [@@js.set]
-end
-
-module StreetViewLocationRequest: sig
-  type t
-  val create:
-    ?location:LatLng.t ->
-    ?preference:street_view_preference ->
-    ?radius:float ->
-    ?source:street_view_source ->
-    unit ->
-    t
-    [@@js.builder]
-  val location: t -> LatLng.t [@@js.get]
-  val preference: t -> street_view_preference [@@js.get]
-  val radius: t -> float [@@js.get]
-  val source: t -> street_view_source [@@js.get]
-  val set_location: t -> LatLng.t -> unit [@@js.set]
-  val set_preference: t -> street_view_preference -> unit [@@js.set]
-  val set_radius: t -> float -> unit [@@js.set]
-  val set_source: t -> street_view_source -> unit [@@js.set]
-end
-
-module StreetViewService: sig
-  type t
-  val new_street_view_service:
-    unit -> t [@@js.new]
-  val get_panorama:
-    StreetViewLocationRequest.t ->
-    (StreetViewPanoramaData.t ->
-     street_view_status ->
-    unit) ->
-    unit
-end
-[@ js.scope "google.maps"]
-
-module PanControlOptions: sig
-  type t
-  val create:
-    position:control_position ->
-    t
-    [@@js.builder]
-  val position: t -> control_position [@@js.get]
-  val set_position: t -> control_position -> unit [@@js.set]
-end
-
-module StreetViewPanoRequest: sig
-  type t
-  val create:
-    pano:string ->
-    t
-    [@@js.builder]
-  val pano: t -> string [@@js.get]
-  val set_pano: t -> string -> unit [@@js.set]
-end
-
-module StreetViewPov: sig
-  type t
-  val create:
-    heading:int ->
-    pitch:int ->
-    t
-    [@@js.builder]
-  val heading: t -> int [@@js.get]
-  val pitch: t -> int [@@js.get]
-  val set_heading: t -> int -> unit [@@js.set]
-  val set_pitch: t -> int -> unit [@@js.set]
-end
-
-module StreetViewPanoramaOptions: sig
-  type t
-  val create:
-    ?address_control:bool ->
-    ?address_control_options:StreetViewAddressControlOptions.t ->
-    ?click_to_go:bool ->
-    ?disable_default_u_i:bool ->
-    ?disable_double_click_zoom:bool ->
-    ?enable_close_button:bool ->
-    ?fullscreen_control:bool ->
-    ?fullscreen_control_options:FullscreenControlOptions.t ->
-    ?image_date_control:bool ->
-    ?links_control:bool ->
-    ?pan_control:bool ->
-    ?pan_control_options:PanControlOptions.t ->
-    ?pano:string ->
-    ?pano_provider:(string->StreetViewPanoramaData.t) ->
-    ?position:LatLng.t ->
-    ?pov:StreetViewPov.t ->
-    ?scrollwheel:bool ->
-    ?visible:bool ->
-    ?zoom_control:bool ->
-    ?zoom_control_options:ZoomControlOptions.t ->
-    unit ->
-    t
-    [@@js.builder]
-  val address_control: t -> bool [@@js.get]
-  val address_control_options: t -> StreetViewAddressControlOptions.t [@@js.get]
-  val click_to_go: t -> bool [@@js.get]
-  val disable_default_u_i: t -> bool [@@js.get]
-  val disable_double_click_zoom: t -> bool [@@js.get]
-  val enable_close_button: t -> bool [@@js.get]
-  val fullscreen_control: t -> bool [@@js.get]
-  val fullscreen_control_options: t -> FullscreenControlOptions.t [@@js.get]
-  val image_date_control: t -> bool [@@js.get]
-  val links_control: t -> bool [@@js.get]
-  val pan_control: t -> bool [@@js.get]
-  val pan_control_options: t -> PanControlOptions.t [@@js.get]
-  val pano: t -> string [@@js.get]
-(*  val pano_provider: t -> (string->StreetViewPanoramaData.t) [@@js.get]*)
-  val position: t -> LatLng.t [@@js.get]
-  val pov: t -> StreetViewPov.t [@@js.get]
-  val scrollwheel: t -> bool [@@js.get]
-  val visible: t -> bool [@@js.get]
-  val zoom_control: t -> bool [@@js.get]
-  val zoom_control_options: t -> ZoomControlOptions.t [@@js.get]
-  val set_address_control: t -> bool -> unit [@@js.set]
-  val set_address_control_options:
-    t -> StreetViewAddressControlOptions.t -> unit [@@js.set]
-  val set_click_to_go: t -> bool -> unit [@@js.set]
-  val set_disable_default_u_i: t -> bool -> unit [@@js.set]
-  val set_disable_double_click_zoom: t -> bool -> unit [@@js.set]
-  val set_enable_close_button: t -> bool -> unit [@@js.set]
-  val set_fullscreen_control: t -> bool -> unit [@@js.set]
-  val set_fullscreen_control_options:
-    t -> FullscreenControlOptions.t -> unit [@@js.set]
-  val set_image_date_control: t -> bool -> unit [@@js.set]
-  val set_links_control: t -> bool -> unit [@@js.set]
-  val set_pan_control: t -> bool -> unit [@@js.set]
-  val set_pan_control_options: t -> PanControlOptions.t -> unit [@@js.set]
-  val set_pano: t -> string -> unit [@@js.set]
-  val set_pano_provider:
-    t -> (string->StreetViewPanoramaData.t) -> unit [@@js.set]
-  val set_position: t -> LatLng.t -> unit [@@js.set]
-  val set_pov: t -> StreetViewPov.t -> unit [@@js.set]
-  val set_scrollwheel: t -> bool -> unit [@@js.set]
-  val set_visible: t -> bool -> unit [@@js.set]
-  val set_zoom_control: t -> bool -> unit [@@js.set]
-  val set_zoom_control_options: t -> ZoomControlOptions.t -> unit [@@js.set]
-end
-
-module StreetViewPanorama: sig
-  type t
-  val new_street_view_panorama:
-    container:Document.t ->
-    ?opts:StreetViewPanoramaOptions.t ->
-    unit ->
-    t [@@js.new]
-  val get_links: t -> StreetViewLink.t list [@@js.call]
-  val get_location: t -> StreetViewLocation.t [@@js.call]
-  val get_pano: t -> string [@@js.call]
-  val get_photographer_pov: t -> StreetViewPov.t [@@js.call]
-  val get_position: t -> LatLng.t [@@js.call]
-  val get_pov: t -> StreetViewPov.t [@@js.call]
-  val get_status: t -> street_view_status [@@js.call]
-  val get_visible: t -> bool [@@js.call]
-  val get_zoom: t -> int [@@js.call]
-  val register_pano_provider:
-    (string->StreetViewPanoramaData.t) -> unit [@@js.call]
-  val set_links: t -> StreetViewLink.t list -> unit [@@js.call]
-  val set_options:
-    t -> StreetViewPanoramaOptions.t -> unit [@@js.call]
-  val set_pano: t -> string -> unit [@@js.call]
-  val set_position: t -> LatLng.t -> unit [@@js.call]
-  val set_pov: t -> StreetViewPov.t -> unit [@@js.call]
-  val set_visible: t -> bool -> unit [@@js.call]
-  val set_zoom: t -> int -> unit [@@js.call]
-end
-  [@js.scope "google.maps"]
-
-module StreetViewCoverageLayer: sig
-  type t
-  val new_street_view_coverage_layer: unit -> t [@@js.new]
-  val get_map: t -> Map.t [@@js.call]
-  val set_map: t -> Map.t -> unit [@@js.call]
-end
-[@js.scope "google.maps"]
-(* End streetview *)
 
 (* Rotation Control *)
 module RotateControlOptions: sig
