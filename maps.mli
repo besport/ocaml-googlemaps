@@ -2259,6 +2259,26 @@ module PlaceSearchRequest: sig
     unit ->
     t
     [@@js.builder]
+  val bounds: t -> LatLngBounds.t
+  val keyword: t -> string
+  val location: t -> LatLng.t
+  val max_price_level: t -> float
+  val min_price_level: t -> float
+  val name: t -> string
+  val open_now: t -> bool
+  val radius: t -> float
+  val rank_by: t -> rank_by
+  val type': t -> string [@@js.get "type"]
+  val set_bounds: t -> LatLngBounds.t -> unit
+  val set_keyword: t -> string -> unit
+  val set_location: t -> LatLng.t -> unit
+  val set_max_price_level: t -> float -> unit
+  val set_min_price_level: t -> float -> unit
+  val set_name: t -> string -> unit
+  val set_open_now: t -> bool -> unit
+  val set_radius: t -> float -> unit
+  val set_rank_by: t -> rank_by -> unit
+  val set_type': t -> string -> unit [@@js.set "type"]
 end
 
 type places_service_status =
@@ -2283,6 +2303,18 @@ module RadarSearchRequest: sig
     unit ->
     t
     [@@js.builder]
+  val bounds: t -> LatLngBounds.t
+  val keyword: t -> string
+  val location: t -> LatLng.t
+  val name: t -> string
+  val radius: t -> float
+  val type': t -> string [@@js.get "type"]
+  val set_bounds: t -> LatLngBounds.t -> unit
+  val set_keyword: t -> string -> unit
+  val set_location: t -> LatLng.t -> unit
+  val set_name: t -> string -> unit
+  val set_radius: t -> float -> unit
+  val set_type': t -> string -> unit  [@@js.set "type"]
 end
 
 module TextSearchRequest: sig
@@ -2296,6 +2328,16 @@ module TextSearchRequest: sig
     unit ->
     t
     [@@js.builder]
+  val bounds: t -> LatLngBounds.t
+  val location: t -> LatLng.t
+  val query: t -> string
+  val radius: t -> float
+  val type': t -> string [@@js.get "type"]
+  val set_bounds: t -> LatLngBounds.t -> unit
+  val set_location: t -> LatLng.t -> unit
+  val set_query: t -> string -> unit
+  val set_radius: t -> float -> unit
+  val set_type': t -> string -> unit  [@@js.set "type"]
 end
 
 module PlacesService: sig
@@ -3428,6 +3470,10 @@ module OverlayCompleteEvent: sig
     unit ->
     t
     [@@js.builder]
+  val overlay: t -> Ojs.t
+  val type': t -> overlay_type  [@@js.get "type"]
+  val set_overlay: t -> Ojs.t -> unit
+  val set_type': t -> overlay_type -> unit  [@@js.set "type"]
 end
 
 module OverlayView: sig
