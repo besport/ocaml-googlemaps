@@ -105,6 +105,35 @@ type map_type_control_style =
   | Inset_large    [@js 4]
   [@@ js.enum]
 
+module MVCObject: sig
+  type t
+  val new_MVC_object : unit -> t [@@js.new]
+  val changed : t -> string -> unit [@@js.call]
+  val get : t -> string -> Ojs.t [@@js.call]
+  val notify : t -> string -> unit [@@js.call]
+  val set : t -> string -> Ojs.t -> unit [@@js.call]
+  val set_values : t -> Ojs.t -> unit [@@js.call]
+  val unbind : t -> string [@@js.call]
+  val unbind_all : t -> unit [@@js.call]
+end
+[@js.scope "google.maps"]
+
+module MVCArray: sig
+  type t
+  val new_MVC_array : ?array:Ojs.t array -> unit -> t [@@js.new]
+  val clear : t -> unit [@@js.call]
+  val for_each : t -> (Ojs.t -> float) -> unit [@@js.call]
+  val get_array : t -> Ojs.t array [@@js.call]
+  val get_at : t -> int -> Ojs.t [@@js.call]
+  val get_length : t -> int [@@js.call]
+  val insert_at : t -> int -> Ojs.t [@@js.call]
+  val pop : t -> Ojs.t [@@js.call]
+  val push : t -> Ojs.t -> int [@@js.call]
+  val remove_at : t -> int -> Ojs.t [@@js.call]
+  val set_at : t -> int -> Ojs.t -> unit [@@js.call]
+end
+[@js.scope "google.maps"]
+
 module Attribution: sig
   type t
   val create :
@@ -288,6 +317,13 @@ module MapOptions: sig
   val set_zoom_control: t -> bool -> unit [@@js.set]
 end
 
+module MapTypeRegistry: sig
+  type t
+  val new_map_type_registry: unit -> t [@@js.new]
+  val set: t -> id:string -> map_type:map_types option -> unit [@@js.call]
+end
+[@js.scope "google.maps"]
+
 module Map: sig
   type t
   val new_map :
@@ -316,6 +352,14 @@ module Map: sig
   val set_tilt : t -> float -> unit [@@js.call]
   val set_zoom : t -> int -> unit [@@js.call]
   (** Attributes need getter and setter **)
+  val controls: t ->  MVCArray.t list [@@js.get]
+  (*val data: t -> Data.t [@@js.get]*)
+  val map_types: t -> MapTypeRegistry.t [@@js.get]
+  val overlay_map_types: t -> MVCArray.t [@@js.get]
+  val set_controls: t ->  MVCArray.t list -> unit [@@js.set]
+(*  val set_data: t -> Data.t -> unit [@@js.set]*)
+  val set_map_types: t -> MapTypeRegistry.t -> unit [@@js.set]
+  val set_overlay_map_types: t -> MVCArray.t -> unit [@@js.set]
   (** Added for polymorphism **)
   val t_to_js : t -> Ojs.t
   val t_of_js : Ojs.t -> t
@@ -523,35 +567,6 @@ module Marker: sig
   val set_title : t -> string -> unit [@@js.call]
   val set_visible : t -> bool -> unit [@@js.call]
   val set_z_index : t -> float -> unit [@@js.call]
-end
-[@js.scope "google.maps"]
-
-module MVCObject: sig
-  type t
-  val new_MVC_object : unit -> t [@@js.new]
-  val changed : t -> string -> unit [@@js.call]
-  val get : t -> string -> Ojs.t [@@js.call]
-  val notify : t -> string -> unit [@@js.call]
-  val set : t -> string -> Ojs.t -> unit [@@js.call]
-  val set_values : t -> Ojs.t -> unit [@@js.call]
-  val unbind : t -> string [@@js.call]
-  val unbind_all : t -> unit [@@js.call]
-end
-[@js.scope "google.maps"]
-
-module MVCArray: sig
-  type t
-  val new_MVC_array : ?array:Ojs.t array -> unit -> t [@@js.new]
-  val clear : t -> unit [@@js.call]
-  val for_each : t -> (Ojs.t -> float) -> unit [@@js.call]
-  val get_array : t -> Ojs.t array [@@js.call]
-  val get_at : t -> int -> Ojs.t [@@js.call]
-  val get_length : t -> int [@@js.call]
-  val insert_at : t -> int -> Ojs.t [@@js.call]
-  val pop : t -> Ojs.t [@@js.call]
-  val push : t -> Ojs.t -> int [@@js.call]
-  val remove_at : t -> int -> Ojs.t [@@js.call]
-  val set_at : t -> int -> Ojs.t -> unit [@@js.call]
 end
 [@js.scope "google.maps"]
 
@@ -1067,6 +1082,12 @@ module GeocoderAddressComponent: sig
     unit -> t
     [@@js.verbatim_names]
     [@@js.builder]
+  val long_name: t -> string [@@js.verbatim_names]
+  val short_name: t -> string [@@js.verbatim_names]
+  val types: t -> string list [@@js.verbatim_names]
+  val set_long_name: t -> string -> unit [@@js.verbatim_names]
+  val set_short_name: t -> string -> unit [@@js.verbatim_names]
+  val set_types: t -> string list -> unit [@@js.verbatim_names]
 end
 
 module GeocoderGeometry: sig
@@ -1076,9 +1097,19 @@ module GeocoderGeometry: sig
     ?location: LatLng.t ->
     ?location_type: geocoder_location_type ->
     ?viewport: LatLngBounds.t ->
-    unit -> t
+    unit ->
+    t
     [@@js.verbatim_names]
     [@@js.builder]
+    val bounds: t ->  LatLngBounds.t [@@js.verbatim_names]
+    val location: t ->  LatLng.t [@@js.verbatim_names]
+    val location_type: t ->  geocoder_location_type [@@js.verbatim_names]
+    val viewport: t ->  LatLngBounds.t [@@js.verbatim_names][@@js.get]
+    val set_bounds: t ->  LatLngBounds.t -> unit [@@js.verbatim_names]
+    val set_location: t ->  LatLng.t -> unit [@@js.verbatim_names]
+    val set_location_type:
+      t ->  geocoder_location_type -> unit [@@js.verbatim_names]
+    val set_viewport: t ->  LatLngBounds.t -> unit [@@js.verbatim_names]
 end
 
 module GeocoderResult: sig
@@ -1091,9 +1122,25 @@ module GeocoderResult: sig
     ?place_id:string ->
     ?postcode_localities:string list ->
     ?types:string list ->
-    unit -> t
+    unit ->
+    t
     [@@js.verbatim_names]
     [@@js.builder]
+  val address_components: t -> GeocoderAddressComponent.t [@@js.verbatim_names]
+  val formatted_address: t -> string [@@js.verbatim_names]
+  val geometry: t -> GeocoderGeometry.t [@@js.verbatim_names]
+  val partial_match: t -> bool [@@js.verbatim_names]
+  val place_id: t -> string [@@js.verbatim_names]
+  val postcode_localities: t -> string list [@@js.verbatim_names]
+  val types: t -> string list [@@js.verbatim_names]
+  val set_address_components:
+    t -> GeocoderAddressComponent.t -> unit [@@js.verbatim_names]
+  val set_formatted_address: t -> string -> unit [@@js.verbatim_names]
+  val set_geometry: t -> GeocoderGeometry.t -> unit [@@js.verbatim_names]
+  val set_partial_match: t -> bool -> unit [@@js.verbatim_names]
+  val set_place_id: t -> string -> unit [@@js.verbatim_names]
+  val set_postcode_localities: t -> string list -> unit [@@js.verbatim_names]
+  val set_types: t -> string list -> unit [@@js.verbatim_names]
 end
 
 module Geocoder: sig
@@ -1273,25 +1320,26 @@ module DirectionsStep:sig
     ?travel_mode:travel_mode ->
     unit ->
     t
+    [@@js.verbatim_names]
     [@@js.builder]
-  val distance: t -> Distance.t [@@js.get]
-  val duration: t -> Duration.t [@@js.get]
-  val end_location: t -> LatLng.t [@@js.get]
-  val instructions: t -> string [@@js.get]
-  val path: t -> LatLng.t list [@@js.get]
-  val start_location: t -> LatLng.t [@@js.get]
-  val steps: t -> t list [@@js.get]
-  val transit: t -> TransitDetails.t [@@js.get]
-  val travel_mode: t -> travel_mode [@@js.get]
-  val set_distance: t -> Distance.t -> unit [@@js.set]
-  val set_duration: t -> Duration.t -> unit [@@js.set]
-  val set_end_location: t -> LatLng.t -> unit [@@js.set]
-  val set_instructions: t -> string -> unit [@@js.set]
-  val set_path: t -> LatLng.t list -> unit [@@js.set]
-  val set_start_location: t -> LatLng.t -> unit [@@js.set]
-  val set_steps: t -> t list -> unit [@@js.set]
-  val set_transit: t -> TransitDetails.t -> unit [@@js.set]
-  val set_travel_mode: t -> travel_mode -> unit [@@js.set]
+  val distance: t -> Distance.t
+  val duration: t -> Duration.t
+  val end_location: t -> LatLng.t [@@js.verbatim_names]
+  val instructions: t -> string
+  val path: t -> LatLng.t list
+  val start_location: t -> LatLng.t [@@js.verbatim_names]
+  val steps: t -> t list
+  val transit: t -> TransitDetails.t
+  val travel_mode: t -> travel_mode [@@js.verbatim_names]
+  val set_distance: t -> Distance.t -> unit
+  val set_duration: t -> Duration.t -> unit
+  val set_end_location: t -> LatLng.t -> unit [@@js.verbatim_names]
+  val set_instructions: t -> string -> unit [@@js.verbatim_names]
+  val set_path: t -> LatLng.t list -> unit
+  val set_start_location: t -> LatLng.t -> unit [@@js.verbatim_names]
+  val set_steps: t -> t list -> unit
+  val set_transit: t -> TransitDetails.t -> unit
+  val set_travel_mode: t -> travel_mode -> unit [@@js.verbatim_names]
 end
 
 module DirectionsGeocodedWaypoint: sig
@@ -1304,6 +1352,12 @@ module DirectionsGeocodedWaypoint: sig
     t
     [@@js.verbatim_names]
     [@@js.builder]
+  val partial_match: t -> bool [@@js.verbatim_names]
+  val place_id: t -> string [@@js.verbatim_names]
+  val types: t -> string list
+  val set_partial_match: t -> bool -> unit [@@js.verbatim_names]
+  val set_place_id: t -> string -> unit [@@js.verbatim_names]
+  val set_types: t -> string list -> unit
 end
 
 module DirectionsLeg: sig
@@ -1324,14 +1378,36 @@ module DirectionsLeg: sig
     t
     [@@js.verbatim_names]
     [@@js.builder]
+  val arrival_time: t -> Time.t [@@js.verbatim_names]
+  val departure_time: t -> Time.t [@@js.verbatim_names]
+  val distance: t -> Distance.t
+  val duration: t -> Duration.t
+  val duration_in_traffic: t -> Duration.t [@@js.verbatim_names]
+  val end_address: t -> string [@@js.verbatim_names]
+  val end_location: t -> LatLng.t [@@js.verbatim_names]
+  val start_address: t -> string [@@js.verbatim_names]
+  val start_location: t -> LatLng.t [@@js.verbatim_names]
+  val steps: t -> DirectionsStep.t list
+  val via_waypoints: t -> LatLng.t list [@@js.verbatim_names]
+  val set_arrival_time: t -> Time.t -> unit [@@js.verbatim_names]
+  val set_departure_time: t -> Time.t -> unit [@@js.verbatim_names]
+  val set_distance: t -> Distance.t -> unit [@@js.verbatim_names]
+  val set_duration: t -> Duration.t -> unit [@@js.verbatim_names]
+  val set_duration_in_traffic: t -> Duration.t -> unit [@@js.verbatim_names]
+  val set_end_address: t -> string -> unit [@@js.verbatim_names]
+  val set_end_location: t -> LatLng.t -> unit [@@js.verbatim_names]
+  val set_start_address: t -> string -> unit [@@js.verbatim_names]
+  val set_start_location: t -> LatLng.t -> unit [@@js.verbatim_names]
+  val set_steps: t -> DirectionsStep.t list -> unit [@@js.verbatim_names]
+  val set_via_waypoints: t -> LatLng.t list -> unit [@@js.verbatim_names]
 end
 
 module DirectionsRoute: sig
   type t
   val create:
+(*    ?fare:TransitFare.t ->*)
     ?bounds:LatLngBounds.t ->
     ?copyrights:string ->
-(*    ?fare:TransitFare.t ->*)
     ?legs:DirectionsLeg.t list ->
     ?overview_path:LatLng.t list ->
     ?overview_polyline:string ->
@@ -1341,6 +1417,20 @@ module DirectionsRoute: sig
     t
     [@@js.verbatim_names]
     [@@js.builder]
+  val bounds: t -> LatLngBounds.t
+  val copyrights: t -> string
+  val legs: t -> DirectionsLeg.t list
+  val overview_path: t -> LatLng.t list [@@js.verbatim_names]
+  val overview_polyline: t -> string [@@js.verbatim_names]
+  val warnings: t -> string list
+  val waypoint_order: t -> int list [@@js.verbatim_names]
+  val set_bounds: t -> LatLngBounds.t -> unit
+  val set_copyrights: t -> string -> unit
+  val set_legs: t -> DirectionsLeg.t list -> unit
+  val set_overview_path: t -> LatLng.t list -> unit [@@js.verbatim_names]
+  val set_overview_polyline: t -> string -> unit [@@js.verbatim_names]
+  val set_warnings: t -> string list -> unit
+  val set_waypoint_order: t -> int list -> unit [@@js.verbatim_names]
 end
 
 module DirectionsResult: sig
@@ -1376,9 +1466,38 @@ module DirectionsRendererOptions: sig
     ?suppress_info_windows:bool ->
     ?suppress_markers:bool ->
     ?suppress_polylines:bool ->
-    unit -> t
+    unit ->
+    t
     [@@js.verbatim_names]
     [@@js.builder]
+  val directions: t -> DirectionsResult.t
+  val draggable: t -> bool
+  val hide_route_list: t -> bool [@@js.verbatim_names]
+  val info_window: t -> InfoWindow.t [@@js.verbatim_names]
+  val map: t -> Map.t
+  val marker_options: t -> MarkerOptions.t [@@js.verbatim_names]
+  val panel: t -> Ojs.t
+  val polyline_options: t -> PolylineOptions.t [@@js.verbatim_names]
+  val preserve_viewport: t -> bool [@@js.verbatim_names]
+  val route_index: t -> int [@@js.verbatim_names]
+  val suppress_bicycling_layer: t -> bool [@@js.verbatim_names]
+  val suppress_info_windows: t -> bool [@@js.verbatim_names]
+  val suppress_markers: t -> bool [@@js.verbatim_names]
+  val suppress_polylines: t -> bool [@@js.verbatim_names]
+  val set_directions: t -> DirectionsResult.t -> unit
+  val set_draggable: t -> bool -> unit
+  val set_hide_route_list: t -> bool -> unit [@@js.verbatim_names]
+  val set_info_window: t -> InfoWindow.t -> unit [@@js.verbatim_names]
+  val set_map: t -> Map.t -> unit
+  val set_marker_options: t -> MarkerOptions.t -> unit [@@js.verbatim_names]
+  val set_panel: t -> Ojs.t -> unit
+  val set_polyline_options: t -> PolylineOptions.t -> unit [@@js.verbatim_names]
+  val set_preserve_viewport: t -> bool -> unit [@@js.verbatim_names]
+  val set_route_index: t -> int -> unit [@@js.verbatim_names]
+  val set_suppress_bicycling_layer: t -> bool -> unit [@@js.verbatim_names]
+  val set_suppress_info_windows: t -> bool -> unit [@@js.verbatim_names]
+  val set_suppress_markers: t -> bool -> unit [@@js.verbatim_names]
+  val set_suppress_polylines: t -> bool -> unit [@@js.verbatim_names]
 end
 
 module DirectionsRenderer: sig
@@ -1442,7 +1561,8 @@ module TransitOptions: sig
     ?modes:transit_mode list ->
     ?routing_preference:transit_route_preference ->
     unit ->
-    t [@@js.builder]
+    t
+    [@@js.builder]
 end
 (* End transit *)
 
@@ -1474,15 +1594,14 @@ end
 
 module DirectionsRequest: sig
   type t
+    (* WARNING : many arguments *)
   val create:
     ?avoid_ferries:bool ->
     ?avoid_highways:bool ->
     ?avoid_tolls:bool ->
-    (** ????? *)
     ?destination:LatLng.t ->
     ?driving_options:DrivingOptions.t ->
     ?optimize_waypoints:bool ->
-    (** ????? *)
     ?origin:LatLng.t ->
     ?provide_route_alternatives:bool ->
     ?region:string ->
@@ -1493,6 +1612,32 @@ module DirectionsRequest: sig
     unit ->
     t
     [@@js.builder]
+  val avoid_ferries: t -> bool
+  val avoid_highways: t -> bool
+  val avoid_tolls: t -> bool
+  val destination: t -> LatLng.t
+  val driving_options: t -> DrivingOptions.t
+  val optimize_waypoints: t -> bool
+  val origin: t -> LatLng.t
+  val provide_route_alternatives: t -> bool
+  val region: t -> string
+  val transit_options: t -> TransitOptions.t
+  val travel_mode: t -> travel_mode
+  val unit_system: t -> unit_system
+  val waypoints: t -> DirectionsWaypoint.t list
+  val set_avoid_ferries: t -> bool -> unit
+  val set_avoid_highways: t -> bool -> unit
+  val set_avoid_tolls: t -> bool -> unit
+  val set_destination: t -> LatLng.t -> unit
+  val set_driving_options: t -> DrivingOptions.t -> unit
+  val set_optimize_waypoints: t -> bool -> unit
+  val set_origin: t -> LatLng.t -> unit
+  val set_provide_route_alternatives: t -> bool -> unit
+  val set_region: t -> string -> unit
+  val set_transit_options: t -> TransitOptions.t -> unit
+  val set_travel_mode: t -> travel_mode -> unit
+  val set_unit_system: t -> unit_system -> unit
+  val set_waypoints: t -> DirectionsWaypoint.t list -> unit
 end
 
 type directions_status =
@@ -1559,6 +1704,16 @@ module PlaceReview: sig
     t
     [@@js.verbatim_names]
     [@@js.builder]
+  val aspects: t -> PlaceAspectRating.t
+  val author_name: t -> string [@@js.verbatim_names]
+  val author_url: t -> string [@@js.verbatim_names]
+  val language: t -> string
+  val text: t -> string
+  val set_aspects: t -> PlaceAspectRating.t -> unit
+  val set_author_name: t -> string -> unit [@@js.verbatim_names]
+  val set_author_url: t -> string -> unit [@@js.verbatim_names]
+  val set_language: t -> string -> unit
+  val set_text: t -> string -> unit
 end
 
 module PlacePhoto: sig
@@ -1569,7 +1724,6 @@ module PlacePhoto: sig
   val html_attributions: t -> string list [@@js.get]
   val width: t -> int [@@js.get]
   val set_height: t -> int -> unit [@@js.set]
-  (** TEST VERBATIM ! **)
   val set_html_attributions: t -> int -> unit
     [@@js.verbatim_names]
     [@@js.set]
@@ -1836,6 +1990,15 @@ module QueryAutocompletePrediction: sig
     t
     [@@js.verbatim_names]
     [@@js.builder]
+  val description: t -> string [@@js.verbatim_names]
+  val matched_substrings: t -> PredictionSubstring.t [@@js.verbatim_names]
+  val place_id: t -> string [@@js.verbatim_names]
+  val terms: t -> PredictionTerm.t list
+  val set_description: t -> string -> unit
+  val set_matched_substrings:
+    t -> PredictionSubstring.t -> unit [@@js.verbatim_names]
+  val set_place_id: t -> string -> unit [@@js.verbatim_names]
+  val set_terms: t -> PredictionTerm.t list -> unit
 end
 
 module QueryAutocompletionRequest: sig
@@ -1892,6 +2055,17 @@ module AutocompletePrediction: sig
     t
     [@@js.verbatim_names]
     [@@js.builder]
+  val description: t -> string
+  val matched_substrings: t -> PredictionSubstring.t list [@@js.verbatim_names]
+  val place_id: t -> string [@@js.verbatim_names]
+  val terms: t -> PredictionTerm.t list
+  val types: t -> string list
+  val set_description: t -> string -> unit
+  val set_matched_substrings:
+    t -> PredictionSubstring.t list -> unit [@@js.verbatim_names]
+  val set_place_id: t -> string -> unit [@@js.verbatim_names]
+  val set_terms: t -> PredictionTerm.t list -> unit
+  val set_types: t -> string list -> unit
 end
 
 module AutocompletionRequest: sig
@@ -1974,11 +2148,11 @@ type distance_matrix_status =
 
 module DistanceMatrixRequest: sig
   type t
+  (* Many arguments *)
   val create:
     ?avoid_ferries:bool ->
     ?avoid_highways:bool ->
     ?avoid_tolls:bool ->
-    (* destinations *)
     ?destinations:LatLng.t list ->
     ?driving_options:DrivingOptions.t ->
     ?origins:LatLng.t list ->
@@ -1989,19 +2163,47 @@ module DistanceMatrixRequest: sig
     unit ->
     t
     [@@js.builder]
+  val avoid_ferries: t -> bool
+  val avoid_highways: t -> bool
+  val avoid_tolls: t -> bool
+  val destinations: t -> LatLng.t list
+  val driving_options: t -> DrivingOptions.t
+  val origins: t -> LatLng.t list
+  val region: t -> string
+  val transit_options: t -> TransitOptions.t
+  val travel_mode: t -> travel_mode
+  val unit_system: t -> unit_system
+  val set_avoid_ferries: t -> bool -> unit
+  val set_avoid_highways: t -> bool -> unit
+  val set_avoid_tolls: t -> bool -> unit
+  val set_destinations: t -> LatLng.t list -> unit
+  val set_driving_options: t -> DrivingOptions.t -> unit
+  val set_origins: t -> LatLng.t list -> unit
+  val set_region: t -> string -> unit
+  val set_transit_options: t -> TransitOptions.t -> unit
+  val set_travel_mode: t -> travel_mode -> unit
+  val set_unit_system: t -> unit_system -> unit
 end
 
 module DistanceMatrixResponseElement: sig
   type t
   val create:
+    (*?fare:TransitFare.t -> *)
     ?distance:Distance.t ->
     ?duration:Duration.t ->
     ?duration_in_traffic:Duration.t ->
-    (*?fare:TransitFare.t -> *)
     ?status:distance_matrix_element_status ->
     unit ->
     t
     [@@js.builder]
+  val distance: t -> Distance.t
+  val duration: t -> Duration.t
+  val duration_in_traffic: t -> Duration.t
+  val status: t -> distance_matrix_element_status
+  val set_distance: t -> Distance.t -> unit
+  val set_duration: t -> Duration.t -> unit
+  val set_duration_in_traffic: t -> Duration.t -> unit
+  val set_status: t -> distance_matrix_element_status -> unit
 end
 
 module DistanceMatrixResponseRow: sig
@@ -3043,13 +3245,6 @@ module MapTypeStyleFeatureType: sig
   type t
     (* SUM TYPE ! *)
 end
-
-module MapTypeRegistry: sig
-  type t
-  val new_map_type_registry: unit -> t [@@js.new]
-  val set: t -> id:string -> map_type:map_types option -> unit [@@js.call]
-end
-[@js.scope "google.maps"]
 
 module MapTypeStyle: sig
   type t
