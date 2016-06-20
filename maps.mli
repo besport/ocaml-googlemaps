@@ -184,10 +184,10 @@ end
 
 module MVCArray: sig
   type t
-  val new_MVC_array : ?array:Ojs.t array -> unit -> t [@@js.new]
+  val new_MVC_array : ?array:Ojs.t list -> unit -> t [@@js.new]
   val clear : t -> unit [@@js.call]
   val for_each : t -> (Ojs.t -> float) -> unit [@@js.call]
-  val get_array : t -> Ojs.t array [@@js.call]
+  val get_array : t -> Ojs.t list [@@js.call]
   val get_at : t -> int -> Ojs.t [@@js.call]
   val get_length : t -> int [@@js.call]
   val insert_at : t -> int -> Ojs.t [@@js.call]
@@ -838,13 +838,13 @@ module MarkerShape: sig
   type t
   val create :
     ?coords:float list ->
-    ?type':string ->
+    ?type':(string [@js "type"]) ->
     unit ->
     t [@@js.builder]
   val coords: t -> float list [@@js.get]
-  val type': t -> string [@@js.get]
+  val type': t -> string [@@js.get "type"]
   val set_coords: t -> float list -> unit [@@js.set]
-  val set_type': t -> string -> unit [@@js.set]
+  val set_type': t -> string -> unit [@@js.set "type"]
 end
 
 module MarkerOptions: sig
@@ -2255,7 +2255,7 @@ module PlaceSearchRequest: sig
     ?open_now:bool ->
     ?radius:float ->
     ?rank_by:rank_by ->
-    ?type':string ->
+    ?type':(string [@js "type"]) ->
     unit ->
     t
     [@@js.builder]
@@ -2279,7 +2279,7 @@ module RadarSearchRequest: sig
     ?location:LatLng.t ->
     ?name:string ->
     ?radius:float ->
-    ?type':string ->
+    ?type':(string [@js "type"]) ->
     unit ->
     t
     [@@js.builder]
@@ -2292,7 +2292,7 @@ module TextSearchRequest: sig
     ?location:LatLng.t ->
     ?query:string ->
     ?radius:float ->
-    ?type':string ->
+    ?type':(string [@js "type"]) ->
     unit ->
     t
     [@@js.builder]
@@ -3424,7 +3424,7 @@ module OverlayCompleteEvent: sig
   val create:
     (* WARNING : Not Ojs.t but shapes *)
     ?overlay:Ojs.t ->
-    ?type':overlay_type ->
+    ?type':(overlay_type [@js "type"]) ->
     unit ->
     t
     [@@js.builder]
