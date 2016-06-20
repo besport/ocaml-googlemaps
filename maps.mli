@@ -413,6 +413,12 @@ module StreetViewTileData: sig
     tile_y:int ->
     string
     [@@js.call]
+  val center_heading : t -> float [@@js.get]
+  val tile_size : t -> Size.t [@@js.get]
+  val world_size : t -> Size.t [@@js.get]
+  val set_center_heading : t -> float -> unit [@@js.set]
+  val set_tile_size : t -> Size.t -> unit [@@js.set]
+  val set_world_size : t -> Size.t -> unit [@@js.set]
 end
 [@ js.scope "google.maps"]
 
@@ -602,6 +608,8 @@ module StreetViewPanorama: sig
   val set_pov: t -> StreetViewPov.t -> unit [@@js.call]
   val set_visible: t -> bool -> unit [@@js.call]
   val set_zoom: t -> int -> unit [@@js.call]
+  val controls : t -> MVCArray.t list [@@js.get]
+  val set_controls : t -> MVCArray.t list -> unit [@@js.set]
 end
   [@js.scope "google.maps"]
 (* End streetview *)
@@ -2108,12 +2116,11 @@ module PlacePhoto: sig
   val new_place_photo: unit -> t [@@js.new]
   val get_url: t -> PhotoOptions.t -> string [@@js.call]
   val height: t -> int [@@js.get]
-  val html_attributions: t -> string list [@@js.get]
+  val html_attributions: t -> string list [@@js.verbatim_names]
   val width: t -> int [@@js.get]
   val set_height: t -> int -> unit [@@js.set]
   val set_html_attributions: t -> int -> unit
     [@@js.verbatim_names]
-    [@@js.set]
   val set_width: t -> int -> unit [@@js.set]
 end
 [@js.scope "google.maps.places"]
@@ -3330,8 +3337,21 @@ module ImageMapType: sig
   (* Takes Node (Document.t ?) *)
   val release_tile: t -> Ojs.t -> unit [@@js.call]
   val set_opacity: t -> float -> t [@@js.call]
-
   (*** Attributes ***)
+  val alt : t -> string [@@js.get]
+  val max_zoom : t -> int [@@js.get]
+  val min_zoom : t -> int [@@js.get]
+  val name : t -> string [@@js.get]
+  val projection : t -> Projection.t [@@js.get]
+  val radius : t -> float [@@js.get]
+  val tile_size : t -> Size.t [@@js.get]
+  val set_alt : t -> string -> unit [@@js.set]
+  val set_max_zoom : t -> int -> unit [@@js.set]
+  val set_min_zoom : t -> int -> unit [@@js.set]
+  val set_name : t -> string -> unit [@@js.set]
+  val set_projection : t -> Projection.t -> unit [@@js.set]
+  val set_radius : t -> float -> unit [@@js.set]
+  val set_tile_size : t -> Size.t -> unit [@@js.set]
 end
 [@js.scope "google.maps"]
 (* End ImageMap *)
@@ -3391,6 +3411,20 @@ module MapType: sig
     t -> tile_coord:Point.t -> zoom:int -> Document.t -> unit [@@js.call]
   (** Node **)
   val release_tile: t -> Ojs.t -> unit [@@js.call]
+  val alt : t -> string [@@js.get]
+  val max_zoom : t -> int [@@js.get]
+  val min_zoom : t -> int [@@js.get]
+  val name : t -> string [@@js.get]
+  val projection : t -> Projection.t [@@js.get]
+  val radius : t -> float [@@js.get]
+  val tile_size : t -> Size.t [@@js.get]
+  val set_alt : t -> string -> unit [@@js.set]
+  val set_max_zoom : t -> int -> unit [@@js.set]
+  val set_min_zoom : t -> int -> unit [@@js.set]
+  val set_name : t -> string -> unit [@@js.set]
+  val set_projection : t -> Projection.t -> unit [@@js.set]
+  val set_radius : t -> float -> unit [@@js.set]
+  val set_tile_size : t -> Size.t -> unit [@@js.set]
 end
 [@js.scope "google.maps"]
 
