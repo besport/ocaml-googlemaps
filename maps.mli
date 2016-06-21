@@ -2538,14 +2538,16 @@ module AutocompleteService: sig
   type t
   val new_autocomplete_service : unit -> t [@@js.new]
   val get_place_predictions :
+    t ->
     AutocompletionRequest.t ->
     (AutocompletePrediction.t list -> places_service_status -> unit)
     -> unit [@@js.call]
 
   val getQueryPredictions :
+    t ->
     QueryAutocompletionRequest.t ->
     (QueryAutocompletePrediction.t list -> places_service_status -> unit) ->
-    unit
+    unit [@@js.call]
 end
 [@js.scope "google.maps.places"]
 
@@ -2674,11 +2676,12 @@ module DistanceMatrixService: sig
   type t
   val new_distance_matrix_service: unit -> t [@@js.new]
   val get_distance_matrix:
-    t -> DistanceMatrixRequest.t ->
+    t ->
+    DistanceMatrixRequest.t ->
     (DistanceMatrixResponse.t ->
      distance_matrix_status ->
      unit) ->
-    unit
+    unit [@@js.call]
 end
 [@js.scope "google.maps"]
 (* End DistanceMatrix *)
@@ -3240,12 +3243,12 @@ module GroundOverlay: sig
     ?opts:GroundOverlayOptions.t ->
     unit ->
     t [@@js.new]
-  val get_bounds: t -> LatLngBounds.t
-  val get_map: t -> Map.t
-  val get_opacity: t -> float
-  val get_url: t -> string
-  val set_map: t -> Map.t -> unit
-  val set_opacity: t -> float -> unit
+  val get_bounds: t -> LatLngBounds.t [@@js.call]
+  val get_map: t -> Map.t [@@js.call]
+  val get_opacity: t -> float [@@js.call]
+  val get_url: t -> string [@@js.call]
+  val set_map: t -> Map.t -> unit [@@js.call]
+  val set_opacity: t -> float -> unit [@@js.call]
 end
 [@js.scope "google.maps"]
 (* End Ground overlay *)
