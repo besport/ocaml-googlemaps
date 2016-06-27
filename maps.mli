@@ -70,11 +70,11 @@ module Date: sig
   val to_time_string : t -> string [@@js.call]
   val to_utc_string : t -> string [@@js.call"toUTCString"]
   val value_of : t -> int [@@js.call]
-
   val now : unit -> int [@@js.global "Date.now"]
   val parse : string -> int [@@js.global "Date.parse"]
   val utc : int-> int -> int -> int [@@js.global "Date.UTC"]
 end
+
 (************************************)
 type travel_mode =
   | Driving   [@js "DRIVING"]
@@ -940,8 +940,8 @@ module Marker: sig
   val set_clickable : t -> flag:bool -> unit [@@js.call]
   val set_cursor : t -> cursor:string -> unit [@@js.call]
   val set_draggable : t -> flag:bool -> unit [@@js.call]
-  val set_icon : t -> Icon.t -> unit
-  val set_label : t -> MarkerLabel.t -> unit
+  val set_icon : t -> Icon.t -> unit [@@js.call]
+  val set_label : t -> MarkerLabel.t -> unit [@@js.call]
   val set_map : t -> Map.t option -> unit [@@js.call]
   val set_opacity : t -> float -> unit [@@js.call]
   val set_options : t -> MarkerOptions.t -> unit [@@js.call]
@@ -990,7 +990,8 @@ module InfoWindow: sig
   val get_content : t -> string [@@js.call]
   val get_position : t -> LatLng.t [@@js.call]
   val get_z_index : t -> float [@@js.call]
-  val open' : t-> ?map:Map.t -> ?anchor:MVCObject.t -> unit -> unit [@@js.call]
+  val open' :
+    t-> ?map:Map.t -> ?anchor:MVCObject.t -> unit -> unit [@@js.call "open"]
   val set_content : t -> string -> unit [@@js.call]
   val set_options : t -> InfoWindowOptions.t -> unit [@@js.call]
   val set_position : t -> LatLng.t -> unit [@@js.call]
@@ -1532,8 +1533,8 @@ module Geocoder: sig
   val new_geocoder : unit -> t [@@js.new]
   val geocode :
     t -> GeocoderRequest.t ->
-    (GeocoderResult.t list -> (*GeocoderStatus.t ->*) unit) ->
-    unit
+    (GeocoderResult.t list -> geocoder_status -> unit) ->
+    unit [@@js.call]
 end
 [@js.scope "google.maps"]
 (* End geocoding *)
