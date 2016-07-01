@@ -3330,7 +3330,11 @@ module MapType: sig
   type t
   val new_map_type: unit -> t [@@js.new]
   val get_tile:
-    t -> tile_coord:Point.t -> zoom:int -> Converter.Element.t -> unit [@@js.call]
+    t ->
+    tile_coord:Point.t ->
+    zoom:int ->
+    Converter.Element.t ->
+    unit [@@js.call]
   (** Node **)
   val release_tile: t -> Ojs.t -> unit [@@js.call]
   val alt : t -> string [@@js.get]
