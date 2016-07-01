@@ -1,81 +1,3 @@
-(************* Core ************)
-module Console: sig
-  type t
-  val log : string -> unit [@@js.global]
-end
-[@js.scope "console"]
-
-module Document: sig
-  type t
-  val get_element_by_id : string -> t [@@js.global]
-end
-[@js.scope "document"]
-
-module Date: sig
-  type t
-  val new_date :
-    ?year:int ->
-    ?month:int ->
-    ?day:int ->
-    ?hours:int ->
-    ?minutes:int ->
-    ?seconds:int ->
-    ?milliseconds:int ->
-    ?date_string:string ->
-    unit ->
-    t [@@js.new]
-  val get_date : t -> int [@@js.call]
-  val get_day : t -> int [@@js.call]
-  val get_full_year : t -> int [@@js.call]
-  val get_hours : t -> int [@@js.call]
-  val get_milliseconds : t -> int [@@js.call]
-  val get_minutes : t -> int [@@js.call]
-  val get_month : t -> int [@@js.call]
-  val get_seconds : t -> int [@@js.call]
-  val get_time : t -> int [@@js.call]
-  val get_timezone_offset : t -> int [@@js.call]
-  val get_utc_date : t -> int [@@js.call "getUTCDate"]
-  val get_utc_day : t -> int [@@js.call "getUTCDay"]
-  val get_utc_full_year : t -> int [@@js.call "getUTCFullYear"]
-  val get_utc_hours : t -> int [@@js.call "getUTCHours"]
-  val get_utc_milliseconds : t -> int [@@js.call "getUTCMilliseconds"]
-  val get_utc_minutes : t -> int [@@js.call "getUTCMinutes"]
-  val get_utc_month : t -> int [@@js.call "getUTCMonth"]
-  val get_utc_seconds : t -> int [@@js.call "getUTCSeconds"]
-  val get_full_year : t -> int [@@js.call]
-  val set_date : t -> int -> unit [@@js.call]
-  val set_full_year : t -> int -> unit [@@js.call]
-  val set_hours : t -> int -> unit [@@js.call]
-  val set_milliseconds : t -> int -> unit [@@js.call]
-  val set_minutes : t -> int -> unit [@@js.call]
-  val set_month : t -> int -> unit [@@js.call]
-  val set_seconds : t -> int -> unit [@@js.call]
-  val set_time : t -> int -> unit [@@js.call]
-  val set_utc_date : t -> int -> unit [@@js.call "setUTCDate"]
-  val set_utc_full_year : t -> int -> unit [@@js.call "setUTCFullYear"]
-  val set_utc_hours : t -> int -> unit [@@js.call "setUTCHours"]
-  val set_utc_milliseconds : t -> int -> unit [@@js.call "setUTCMilliseconds"]
-  val set_utc_minutes : t -> int -> unit [@@js.call "setUTCMinutes"]
-  val set_utc_month : t -> int -> unit [@@js.call "setUTCMonth"]
-  val set_utc_seconds : t -> int -> unit [@@js.call "setUTCSeconds"]
-  val set_full_year : t -> int -> unit [@@js.call]
-  val to_date_string : t -> string [@@js.call]
-  val to_utc_string : t -> string [@@js.call "toUTCString"]
-  val to_iso_string : t -> string [@@js.call "toISOString"]
-  val to_json : t -> string [@@js.call "toJSON"]
-  val to_locale_date_string : t -> string [@@js.call]
-  val to_locale_time_string : t -> string [@@js.call]
-  val to_locale_string : t -> string [@@js.call]
-  val to_string : t -> string [@@js.call]
-  val to_time_string : t -> string [@@js.call]
-  val to_utc_string : t -> string [@@js.call"toUTCString"]
-  val value_of : t -> int [@@js.call]
-  val now : unit -> int [@@js.global "Date.now"]
-  val parse : string -> int [@@js.global "Date.parse"]
-  val utc : int-> int -> int -> int [@@js.global "Date.UTC"]
-end
-
-(************************************)
 type travel_mode =
   | Driving   [@js "DRIVING"]
   | Walking   [@js "WALKING"]
@@ -123,23 +45,19 @@ type geocoder_status =
   [@@js.enum]
 
 type control_position =
-  | BOTTOM        [@js 11]
-  | BOTTOM_CENTER [@js 11]
-  | BOTTOM_LEFT   [@js 10]
-  | BOTTOM_RIGHT  [@js 12]
-  | CENTER        [@js 13]
-  | LEFT          [@js 5]
-  | LEFT_BOTTOM   [@js 6]
-  | LEFT_CENTER   [@js 4]
-  | LEFT_TOP      [@js 5]
-  | RIGHT         [@js 7]
-  | RIGHT_BOTTOM  [@js 9]
-  | RIGHT_CENTER  [@js 8]
-  | RIGHT_TOP     [@js 7]
-  | TOP           [@js 2]
-  | TOP_CENTER    [@js 2]
-  | TOP_LEFT      [@js 1]
-  | TOP_RIGHT     [@js 3]
+  | Bottom        [@js 11]
+  | Bottom_left   [@js 10]
+  | Bottom_right  [@js 12]
+  | Center        [@js 13]
+  | Left          [@js 5]
+  | Left_bottom   [@js 6]
+  | Left_center   [@js 4]
+  | Right         [@js 7]
+  | Right_bottom  [@js 9]
+  | Right_center  [@js 8]
+  | Top           [@js 2]
+  | Top_left      [@js 1]
+  | Top_right     [@js 3]
   [@@js.enum]
 
 type overlay_type =
@@ -186,7 +104,7 @@ module MVCArray: sig
   type t
   val new_MVC_array : ?array:Ojs.t list -> unit -> t [@@js.new]
   val clear : t -> unit [@@js.call]
-  val for_each : t -> (Ojs.t -> float) -> unit [@@js.call]
+  val for_each : t -> (Ojs.t -> int) -> unit [@@js.call]
   val get_array : t -> Ojs.t list [@@js.call]
   val get_at : t -> int -> Ojs.t [@@js.call]
   val get_length : t -> int [@@js.call]
@@ -585,7 +503,7 @@ end
 module StreetViewPanorama: sig
   type t
   val new_street_view_panorama:
-    container:Document.t ->
+    container:Converter.Element.t ->
     ?opts:StreetViewPanoramaOptions.t ->
     unit ->
     t [@@js.new]
@@ -702,7 +620,7 @@ end
 module Map: sig
   type t
   val new_map :
-    Document.t ->
+    Converter.Element.t ->
     ?opts:MapOptions.t -> unit -> t [@@js.new]
 
   val fit_bounds : t -> LatLngBounds.t -> unit [@@js.call]
@@ -711,7 +629,7 @@ module Map: sig
   val get_clickable_icons : t -> bool [@@js.call]
   val set_map_type_id : t -> map_types -> unit [@@js.call]
   val get_map_type_id : t -> map_types [@@js.call]
-  val get_div : t -> Document.t [@@js.call]
+  val get_div : t -> Converter.Element.t [@@js.call]
   val get_heading : t -> float [@@js.call]
   val get_projection : t -> Projection.t [@@js.call]
   val get_tilt : t -> float [@@js.call]
@@ -1545,17 +1463,17 @@ module Time: sig
   val create:
     ?text:string ->
     ?time_zone:string ->
-    ?value:Date.t->
+    ?value:Converter.Date.t->
     unit ->
     t
     [@@js.verbatim_names]
     [@@js.builder]
   val text: t -> string  [@@js.verbatim_names]
   val time_zone: t -> string  [@@js.verbatim_names]
-  val value: t -> Date.t [@@js.verbatim_names]
+  val value: t -> Converter.Date.t [@@js.verbatim_names]
   val set_text: t -> string -> unit [@@js.verbatim_names]
   val set_time_zone: t -> string -> unit [@@js.verbatim_names]
-  val set_value: t -> Date.t-> unit [@@js.verbatim_names]
+  val set_value: t -> Converter.Date.t-> unit [@@js.verbatim_names]
 end
 
 module Duration: sig
@@ -1945,19 +1863,19 @@ end
 module TransitOptions: sig
   type t
   val create:
-    ?arrival_time:Date.t ->
-    ?departure_time:Date.t ->
+    ?arrival_time:Converter.Date.t ->
+    ?departure_time:Converter.Date.t ->
     ?modes:transit_mode list ->
     ?routing_preference:transit_route_preference ->
     unit ->
     t
     [@@js.builder]
-  val arrival_time: t -> Date.t
-  val departure_time: t -> Date.t
+  val arrival_time: t -> Converter.Date.t
+  val departure_time: t -> Converter.Date.t
   val modes: t -> transit_mode list
   val routing_preference: t -> transit_route_preference
-  val set_arrival_time: t -> Date.t -> unit
-  val set_departure_time: t -> Date.t -> unit
+  val set_arrival_time: t -> Converter.Date.t -> unit
+  val set_departure_time: t -> Converter.Date.t -> unit
   val set_modes: t -> transit_mode list -> unit
   val set_routing_preference: t -> transit_route_preference -> unit
 end
@@ -1967,7 +1885,7 @@ end
 module DrivingOptions: sig
   type t
   val create:
-    ?departure_time:Date.t ->
+    ?departure_time:Converter.Date.t ->
     ?traffic_model:traffic_model ->
     unit ->
     t
@@ -2556,7 +2474,7 @@ module Autocomplete: sig
   type t
   val new_autocomplete :
     ?opts:AutocompleteOptions.t ->
-    Document.t ->
+    Converter.Element.t ->
     t [@@js.new]
   val get_bounds : t -> unit -> LatLngBounds.t [@@js.call]
   val get_place : t -> unit -> PlaceResult.t [@@js.call]
@@ -3181,7 +3099,7 @@ end
 module SearchBox: sig
   type t
   val new_search_box:
-    Document.t -> ?opts:SearchBoxOptions.t -> unit -> t [@@js.new]
+    Converter.Element.t -> ?opts:SearchBoxOptions.t -> unit -> t [@@js.new]
   val get_bounds: t -> LatLngBounds.t [@@js.call]
   val get_places: t -> PlaceResult.t list [@@js.call]
   val set_bounds: t -> LatLngBounds.t -> unit [@@js.call]
@@ -3336,9 +3254,9 @@ module ImageMapType: sig
   val new_image_map_type:
     opts:ImageMapTypeOptions.t -> t [@@js.new]
   val get_opacity: t -> float [@@js.call]
-  (* Should take Document, not Document.t *)
-  val get_tile: t -> Point.t -> int -> Document.t -> unit [@@js.call]
-  (* Takes Node (Document.t ?) *)
+  (* Should take Document, not Converter.Element.t *)
+  val get_tile: t -> Point.t -> int -> Converter.Element.t -> unit [@@js.call]
+  (* Takes Node (Converter.Element.t ?) *)
   val release_tile: t -> Ojs.t -> unit [@@js.call]
   val set_opacity: t -> float -> t [@@js.call]
   (*** Attributes ***)
@@ -3412,7 +3330,11 @@ module MapType: sig
   type t
   val new_map_type: unit -> t [@@js.new]
   val get_tile:
-    t -> tile_coord:Point.t -> zoom:int -> Document.t -> unit [@@js.call]
+    t ->
+    tile_coord:Point.t ->
+    zoom:int ->
+    Converter.Element.t ->
+    unit [@@js.call]
   (** Node **)
   val release_tile: t -> Ojs.t -> unit [@@js.call]
   val alt : t -> string [@@js.get]
@@ -3436,24 +3358,24 @@ module MapPanes: sig
   type t
   (** Only Element **)
   val create:
-    ?float_pane:Document.t ->
-    ?map_pane:Document.t ->
-    ?marker_layer:Document.t ->
-    ?overlay_layer:Document.t ->
-    ?overlay_mouse_target:Document.t ->
+    ?float_pane:Converter.Element.t ->
+    ?map_pane:Converter.Element.t ->
+    ?marker_layer:Converter.Element.t ->
+    ?overlay_layer:Converter.Element.t ->
+    ?overlay_mouse_target:Converter.Element.t ->
     unit ->
     t
     [@@js.builder]
-  val float_pane: t -> Document.t [@@js.get]
-  val map_pane: t -> Document.t [@@js.get]
-  val marker_layer: t -> Document.t [@@js.get]
-  val overlay_layer: t -> Document.t [@@js.get]
-  val overlay_mouse_target: t -> Document.t [@@js.get]
-  val set_float_pane: t -> Document.t -> unit [@@js.set]
-  val set_map_pane: t -> Document.t -> unit [@@js.set]
-  val set_marker_layer: t -> Document.t -> unit [@@js.set]
-  val set_overlay_layer: t -> Document.t -> unit [@@js.set]
-  val set_overlay_mouse_target: t -> Document.t -> unit [@@js.set]
+  val float_pane: t -> Converter.Element.t [@@js.get]
+  val map_pane: t -> Converter.Element.t [@@js.get]
+  val marker_layer: t -> Converter.Element.t [@@js.get]
+  val overlay_layer: t -> Converter.Element.t [@@js.get]
+  val overlay_mouse_target: t -> Converter.Element.t [@@js.get]
+  val set_float_pane: t -> Converter.Element.t -> unit [@@js.set]
+  val set_map_pane: t -> Converter.Element.t -> unit [@@js.set]
+  val set_marker_layer: t -> Converter.Element.t -> unit [@@js.set]
+  val set_overlay_layer: t -> Converter.Element.t -> unit [@@js.set]
+  val set_overlay_mouse_target: t -> Converter.Element.t -> unit [@@js.set]
 end
 
 module StyledMapTypeOptions: sig
