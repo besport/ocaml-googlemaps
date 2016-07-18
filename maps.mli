@@ -869,6 +869,9 @@ module Marker: sig
   val set_title : t -> string -> unit [@@js.call]
   val set_visible : t -> bool -> unit [@@js.call]
   val set_z_index : t -> float -> unit [@@js.call]
+  (** Added for polymorphism **)
+  val t_to_js : t -> Ojs.t
+  val t_of_js : Ojs.t -> t
 end
 [@js.scope "google.maps"]
 
