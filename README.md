@@ -70,5 +70,4 @@ Here, as the last arguments of ```create``` and ```new_map``` are optional, we a
 This binding is using Google Map v3.24
 
 ### Known bugs:
-* The namespace ```Spherical``` isn't complete for the moment
 * The namespace ```Data```isn't done yet
