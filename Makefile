@@ -8,7 +8,7 @@ all:
 	ocamlfind ocamlc -a -package gen_js_api.ppx -o converter.cma converter.cmo
 
 install: all
-	ocamlfind install ocaml-googlemap META *.cma *.cmi
+	ocamlfind install ocaml-googlemaps META *.cma *.cmi
 
 mrproper:
 	rm -rf maps *.cmi *.cmo *.cma
