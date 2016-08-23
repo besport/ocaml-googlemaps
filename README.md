@@ -11,8 +11,8 @@ To be able to compile and run correctly this binding, you need to install the fo
 To install it via ```opam``` use the folowing commands :
 
 ```
-opam pin add ocaml-googlemap https://github.com/o-marshmallow/ocaml-googlemap.git
-opam install ocaml-googlemap
+opam pin add ocaml-googlemaps https://github.com/o-marshmallow/ocaml-googlemap.git
+opam install ocaml-googlemaps
 ```
 
 ### Usage :
@@ -22,7 +22,7 @@ You only need to type ```make``` in the ```example``` folder to get ```example.j
 ### Compilation : 
 First, compile your source code into ocaml bytecode :
 ```
-ocamlfind ocamlc -o example.byte -no-check-prims -package js_of_ocaml,gen_js_api,ocaml-googlemap -linkpkg example.ml
+ocamlfind ocamlc -o example.byte -no-check-prims -package js_of_ocaml,gen_js_api,ocaml-googlemaps -linkpkg example.ml
 ```
 
 Then you can get a ```js``` file from your bytecode thanks to ```js_of_ocaml``` :
@@ -31,7 +31,8 @@ js_of_ocaml -o example.js +gen_js_api/ojs_runtime.js example.byte
 ```
 
 ### Documentation and conventions used :
-You can find the official documentation [here](https://developers.google.com/maps/documentation/javascript/reference)
+You can find the official documentation:
+https://developers.google.com/maps/documentation/javascript/reference
 
 The conventions used are ```gen_js_api``` 's :
 
@@ -69,5 +70,4 @@ Here, as the last arguments of ```create``` and ```new_map``` are optional, we a
 This binding is using Google Map v3.24
 
 ### Known bugs:
-* The namespace ```Spherical``` isn't complete for the moment
 * The namespace ```Data```isn't done yet

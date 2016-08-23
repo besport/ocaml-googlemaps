@@ -383,6 +383,16 @@ module StreetViewLocationRequest: sig
   val set_source: t -> street_view_source -> unit [@@js.set]
 end
 
+module StreetViewPanoRequest: sig
+  type t
+  val create:
+    pano:string ->
+    t
+    [@@js.builder]
+  val pano: t -> string [@@js.get]
+  val set_pano: t -> string -> unit [@@js.set]
+end
+
 module StreetViewService: sig
   type t
   val new_street_view_service:
@@ -393,6 +403,13 @@ module StreetViewService: sig
      street_view_status ->
     unit) ->
     unit
+  val get_panorama_panorequest:
+    StreetViewPanoRequest.t ->
+    (StreetViewPanoramaData.t ->
+     street_view_status ->
+    unit) ->
+    unit
+    [@@js.call "getPanorama"]
 end
 [@ js.scope "google.maps"]
 
@@ -404,16 +421,6 @@ module PanControlOptions: sig
     [@@js.builder]
   val position: t -> control_position [@@js.get]
   val set_position: t -> control_position -> unit [@@js.set]
-end
-
-module StreetViewPanoRequest: sig
-  type t
-  val create:
-    pano:string ->
-    t
-    [@@js.builder]
-  val pano: t -> string [@@js.get]
-  val set_pano: t -> string -> unit [@@js.set]
 end
 
 module StreetViewPov: sig
@@ -628,6 +635,7 @@ module Map: sig
   val get_center : t -> LatLng.t [@@js.call]
   val get_clickable_icons : t -> bool [@@js.call]
   val set_map_type_id : t -> map_types -> unit [@@js.call]
+  val set_map_type_id_string : t -> string -> unit [@@js.call "setMapTypeId"]
   val get_map_type_id : t -> map_types [@@js.call]
   val get_div : t -> Converter.Element.t [@@js.call]
   val get_heading : t -> float [@@js.call]
@@ -835,6 +843,46 @@ module MarkerOptions: sig
   val set_z_index: t -> float -> unit [@@js.set]
 end
 
+(* Symbol *)
+module Symbol: sig
+  type t
+  val create:
+    ?anchor:Point.t ->
+    ?fill_color:string ->
+    ?fill_opacity:int ->
+    ?label_origin:Point.t ->
+    path:symbol_path ->
+    ?rotation:float ->
+    ?scale:float ->
+    ?stroke_color:string ->
+    ?stroke_opacity:float ->
+    ?stroke_weight:float ->
+    unit ->
+    t
+    [@@js.builder]
+  val anchor: t -> Point.t [@@js.get]
+  val fill_color: t -> string [@@js.get]
+  val fill_opacity: t -> int [@@js.get]
+  val label_origin: t -> Point.t [@@js.get]
+  val path: t -> symbol_path [@@js.get]
+  val rotation: t -> float [@@js.get]
+  val scale: t -> float [@@js.get]
+  val stroke_color: t -> string [@@js.get]
+  val stroke_opacity: t -> float [@@js.get]
+  val stroke_weight: t -> float [@@js.get]
+  val set_anchor: t -> Point.t -> unit [@@js.set]
+  val set_fill_color: t -> string -> unit [@@js.set]
+  val set_fill_opacity: t -> int -> unit [@@js.set]
+  val set_label_origin: t -> Point.t -> unit [@@js.set]
+  val set_path: t -> symbol_path -> unit [@@js.set]
+  val set_rotation: t -> float -> unit [@@js.set]
+  val set_scale: t -> float -> unit [@@js.set]
+  val set_stroke_color: t -> string -> unit [@@js.set]
+  val set_stroke_opacity: t -> float -> unit [@@js.set]
+  val set_stroke_weight: t -> float -> unit [@@js.set]
+end
+(* End symbol *)
+
 module Marker: sig
   type t
   val new_marker : ?opts:MarkerOptions.t -> unit -> t [@@js.new]
@@ -859,8 +907,12 @@ module Marker: sig
   val set_cursor : t -> cursor:string -> unit [@@js.call]
   val set_draggable : t -> flag:bool -> unit [@@js.call]
   val set_icon : t -> Icon.t -> unit [@@js.call]
+  val set_icon_string : t -> string -> unit [@@js.call "setIcon"]
+  val set_icon_symbol : t -> Symbol.t -> unit [@@js.call "setIcon"]
   val set_label : t -> MarkerLabel.t -> unit [@@js.call]
+  val set_label_string : t -> string -> unit [@@js.call "setLabel"]
   val set_map : t -> Map.t option -> unit [@@js.call]
+  val set_map_streetview: t -> StreetViewPanorama.t -> unit [@@js.call "setMap"]
   val set_opacity : t -> float -> unit [@@js.call]
   val set_options : t -> MarkerOptions.t -> unit [@@js.call]
   val set_place : t -> MarkerPlace.t -> unit [@@js.call]
@@ -869,6 +921,9 @@ module Marker: sig
   val set_title : t -> string -> unit [@@js.call]
   val set_visible : t -> bool -> unit [@@js.call]
   val set_z_index : t -> float -> unit [@@js.call]
+  (** Added for polymorphism **)
+  val t_to_js : t -> Ojs.t
+  val t_of_js : Ojs.t -> t
 end
 [@js.scope "google.maps"]
 
@@ -910,6 +965,12 @@ module InfoWindow: sig
   val get_z_index : t -> float [@@js.call]
   val open' :
     t-> ?map:Map.t -> ?anchor:MVCObject.t -> unit -> unit [@@js.call "open"]
+  val open_streetview:
+    t ->
+    ?map:StreetViewPanorama.t ->
+    ?anchor:MVCObject.t ->
+    unit ->
+    unit [@@js.call "open"]
   val set_content : t -> string -> unit [@@js.call]
   val set_options : t -> InfoWindowOptions.t -> unit [@@js.call]
   val set_position : t -> LatLng.t -> unit [@@js.call]
@@ -917,46 +978,7 @@ module InfoWindow: sig
 end
 [@js.scope "google.maps"]
 
-(* Symbol *)
 
-module Symbol: sig
-  type t
-  val create:
-    ?anchor:Point.t ->
-    ?fill_color:string ->
-    ?fill_opacity:int ->
-    ?label_origin:Point.t ->
-    path:symbol_path ->
-    ?rotation:float ->
-    ?scale:float ->
-    ?stroke_color:string ->
-    ?stroke_opacity:float ->
-    ?stroke_weight:float ->
-    unit ->
-    t
-    [@@js.builder]
-  val anchor: t -> Point.t [@@js.get]
-  val fill_color: t -> string [@@js.get]
-  val fill_opacity: t -> int [@@js.get]
-  val label_origin: t -> Point.t [@@js.get]
-  val path: t -> symbol_path [@@js.get]
-  val rotation: t -> float [@@js.get]
-  val scale: t -> float [@@js.get]
-  val stroke_color: t -> string [@@js.get]
-  val stroke_opacity: t -> float [@@js.get]
-  val stroke_weight: t -> float [@@js.get]
-  val set_anchor: t -> Point.t -> unit [@@js.set]
-  val set_fill_color: t -> string -> unit [@@js.set]
-  val set_fill_opacity: t -> int -> unit [@@js.set]
-  val set_label_origin: t -> Point.t -> unit [@@js.set]
-  val set_path: t -> symbol_path -> unit [@@js.set]
-  val set_rotation: t -> float -> unit [@@js.set]
-  val set_scale: t -> float -> unit [@@js.set]
-  val set_stroke_color: t -> string -> unit [@@js.set]
-  val set_stroke_opacity: t -> float -> unit [@@js.set]
-  val set_stroke_weight: t -> float -> unit [@@js.set]
-end
-(* End symbol *)
 
 module IconSequence: sig
   type t
@@ -1035,6 +1057,7 @@ module Polyline: sig
   val set_map : t -> Map.t option -> unit [@@js.call]
   val set_options : t -> PolylineOptions.t -> unit [@@js.call]
   val set_path : t -> LatLng.t list -> unit [@@js.call]
+  val set_path_mvcarray : t -> MVCArray.t -> unit [@@js.call "setPath"]
   val set_visible : t -> bool -> unit [@@js.call]
 end
 [@js.scope "google.maps"]
@@ -1119,7 +1142,9 @@ module Polygon: sig
   val set_map : t -> Map.t option -> unit [@@js.call]
   val set_options : t -> PolylineOptions.t -> unit [@@js.call]
   val set_path : t -> LatLng.t list -> unit [@@js.call]
+  val set_path_mvcarray : t -> MVCArray.t -> unit [@@js.call "setPath"]
   val set_paths : t -> LatLng.t list list -> unit [@@js.call]
+  val set_paths_mvcarray : t -> MVCArray.t -> unit [@@js.call "setPaths"]
   val set_visible : t -> bool -> unit [@@js.call]
 end
 [@js.scope "google.maps"]
@@ -3446,6 +3471,7 @@ module OverlayView: sig
   val on_add: t -> unit [@@js.call]
   val on_remove: t -> unit [@@js.call]
   val set_map: t -> Map.t -> unit [@@js.call]
+  val set_map_streetview: t -> StreetViewPanorama.t -> unit [@@js.call "setMap"]
 end
 [@js.scope "google.maps"]
 (* End Overlay *)
@@ -3540,9 +3566,84 @@ end
 [@js.scope "google.maps.geometry.encoding"]
 
 module Spherical: sig
-  val compute_area: LatLng.t -> ?radius:float -> unit -> float [@@js.global]
+  val compute_area:
+    LatLng.t ->
+    ?radius:float ->
+    unit ->
+    float [@@js.global]
+
   val compute_distance_between:
-    LatLng.t -> LatLng.t -> ?radius:float -> unit -> float [@@js.global]
+    LatLng.t ->
+    LatLng.t ->
+    ?radius:float ->
+    unit ->
+    float [@@js.global]
+
+  val compute_heading:
+    LatLng.t ->
+    LatLng.t ->
+    float [@@js.global]
+
+  val compute_length:
+    LatLng.t list ->
+    ?radius:float ->
+    unit ->
+    float [@@js.global]
+
+  val compute_offset:
+    LatLng.t ->
+    float ->
+    float ->
+    ?radius:float ->
+    unit ->
+    LatLng.t [@@js.global]
+
+  val compute_offset_origin:
+    LatLng.t ->
+    float ->
+    float ->
+    ?radius:float ->
+    unit ->
+    LatLng.t [@@js.global]
+
+  val compute_signed_area:
+    LatLng.t list ->
+    ?radius:float ->
+    unit          ->
+    float
+    [@@js.global]
+
+  val interpolate:
+    LatLng.t ->
+    LatLng.t ->
+    float    ->
+    LatLng.t
+  [@@js.global]
 end
 [@js.scope "google.maps.geometry.spherical"]
+
+module Poly: sig
+  val contains_location:
+    LatLng.t  ->
+    Polygon.t ->
+    bool
+    [@@js.global]
+
+  val is_location_on_edge_polygon:
+    LatLng.t  ->
+    Polygon.t ->
+    ?tolerance:float ->
+    unit ->
+    bool
+    [@@js.global "isLocationOnEdge"]
+
+  val is_location_on_edge_polyline:
+    LatLng.t  ->
+    Polyline.t ->
+    ?tolerance:float ->
+    unit ->
+    bool
+    [@@js.global "isLocationOnEdge"]
+end
+[@js.scope "google.maps.geometry.poly"]
 (* End Namespaces *)
