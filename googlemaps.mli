@@ -1344,7 +1344,7 @@ module Event: sig
   val remove_listener :
     MapsEventListener.t -> unit [@@js.call "removeListener"]
 
-  val trigger : Ojs.t -> string -> MouseEvent.t -> unit
+  val trigger : Ojs.t -> string -> ?mousevent:MouseEvent.t -> unit -> unit
     [@@js.call "trigger"]
 end
 
