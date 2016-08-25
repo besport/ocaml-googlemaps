@@ -1,4 +1,4 @@
-NAME=maps
+NAME=googlemaps
 PACKAGE=-package gen_js_api,js_of_ocaml
 all:
 	ocamlfind gen_js_api/gen_js_api $(NAME).mli
