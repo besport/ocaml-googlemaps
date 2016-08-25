@@ -1345,7 +1345,7 @@ module Event: sig
     MapsEventListener.t -> unit [@@js.call "removeListener"]
 
   val trigger : Ojs.t -> string -> ?mousevent:MouseEvent.t -> unit -> unit
-    [@@js.call "trigger"]
+    [@@js.global "google.maps.event.trigger"]
 end
 
 (* End events *)
