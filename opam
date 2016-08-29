@@ -6,7 +6,7 @@ authors: "o-marshmallow"
 homepage: ""
 bug-reports: ""
 license: ""
-dev-repo: "https://github.com/o-marshmallow/ocaml-googlemap"
+dev-repo: "https://github.com/besport/ocaml-googlemaps"
 build: [
   [make]
 ]
