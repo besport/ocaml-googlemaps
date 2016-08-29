@@ -1,4 +1,4 @@
-#GoogleMap binding for OCaml
+#GoogleMaps binding for OCaml
 
 ### Dependencies :
 To be able to compile and run correctly this binding, you need to install the following packages in ```opam``` :
@@ -11,7 +11,7 @@ To be able to compile and run correctly this binding, you need to install the fo
 To install it via ```opam``` use the folowing commands :
 
 ```
-opam pin add ocaml-googlemaps https://github.com/besport/ocaml-googlemap.git
+opam pin add ocaml-googlemaps https://github.com/besport/ocaml-googlemaps.git
 opam install ocaml-googlemaps
 ```
 
