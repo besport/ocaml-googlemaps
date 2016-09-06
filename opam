@@ -3,10 +3,10 @@ name: "ocaml-googlemaps"
 version: "1.1"
 maintainer: "o-marshmallow"
 authors: "o-marshmallow"
-homepage: ""
-bug-reports: ""
-license: ""
-dev-repo: "https://github.com/besport/ocaml-googlemaps"
+homepage: "https://github.com/besport/ocaml-googlemaps"
+bug-reports: "https://github.com/besport/ocaml-googlemaps/issues"
+license: "undefined"
+dev-repo: "https://github.com/besport/ocaml-googlemaps.git"
 build: [
   [make]
 ]
