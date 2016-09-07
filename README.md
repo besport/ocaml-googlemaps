@@ -32,7 +32,7 @@ js_of_ocaml -o example.js +gen_js_api/ojs_runtime.js example.byte
 
 ### Documentation and conventions used :
 You can find the official documentation:
-https://developers.google.com/maps/documentation/javascript/reference
+https://developers.google.com/maps/documentation/javascript/3.24/reference
 
 The conventions used are ```gen_js_api``` 's :
 
