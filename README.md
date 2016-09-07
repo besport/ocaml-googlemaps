@@ -58,7 +58,7 @@ var map = new google.maps.Map(document.getElementById('map'), opts);
 
 Becomes in OCaml (supposing map is the Dom element where to place the map) :
 ```ocaml
-open Maps
+open Googlemaps
 let position = LatLng.new_lat_lng (-34.397) 150.644 in
 let opts = MapOptions.create ~center:position ~zoom:10 () in
 let () = MapOptions.set_zoom opts 8 in
