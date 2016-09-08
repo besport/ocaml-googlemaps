@@ -2303,12 +2303,12 @@ module PlacesService: sig
      PlaceSearchPagination.t ->
      unit) ->
     unit [@@js.call]
-  val radar_search: RadarSearchRequest.t ->
+  val radar_search: t -> RadarSearchRequest.t ->
     (PlaceResult.t list ->
      places_service_status ->
      unit) ->
     unit [@@js.call]
-  val text_search: TextSearchRequest.t ->
+  val text_search: t -> TextSearchRequest.t ->
     (PlaceResult.t list ->
      places_service_status ->
      PlaceSearchPagination.t ->
