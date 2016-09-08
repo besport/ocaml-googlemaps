@@ -1326,39 +1326,39 @@ module Event: sig
     Ojs.t -> string -> ?capture:bool ->
     (MouseEvent.t -> unit) ->
      MapsEventListener.t
-    [@@js.call "addDomListener"]
+    [@@js.global "google.maps.event.addDomListener"]
 
   val add_dom_listener_once :
     Ojs.t -> string -> ?capture:bool ->
     (MouseEvent.t -> unit) ->
      MapsEventListener.t
-    [@@js.call "addDomListenerOnce"]
+    [@@js.global "google.maps.event.addDomListenerOnce"]
 
   val add_listener :
     Ojs.t -> string -> (MouseEvent.t -> unit) ->
     MapsEventListener.t
-    [@@js.call "addListener"]
+    [@@js.global "google.maps.event.addListener"]
 
   val add_listener_once :
     Ojs.t -> string -> (MouseEvent.t -> unit) ->
     MapsEventListener.t
-    [@@js.call "addListenerOnce"]
+    [@@js.global "google.maps.event.addListenerOnce"]
 
   val clear_instance_listeners :
     Ojs.t -> unit
-    [@@js.call "clearInstanceListeners"]
+    [@@js.global "google.maps.event.clearInstanceListeners"]
 
   val clear_listeners :
     Ojs.t -> string -> unit
-    [@@js.call "clearListeners"]
+    [@@js.global "google.maps.event.clearListeners"]
 
   val remove_listener :
-    MapsEventListener.t -> unit [@@js.call "removeListener"]
+    MapsEventListener.t -> unit
+    [@@js.global "google.maps.event.removeListener"]
 
   val trigger : Ojs.t -> string -> ?mousevent:MouseEvent.t -> unit -> unit
     [@@js.global "google.maps.event.trigger"]
 end
-
 (* End events *)
 
 (* Geocoding *)
