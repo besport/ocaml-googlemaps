@@ -1323,15 +1323,19 @@ end
 
 module Event: sig
   val add_dom_listener :
-    Ojs.t -> string -> ?capture:bool ->
+    Ojs.t -> string ->
     (MouseEvent.t -> unit) ->
-     MapsEventListener.t
+    ?capture:bool ->
+    unit ->
+    MapsEventListener.t
     [@@js.global "google.maps.event.addDomListener"]
 
   val add_dom_listener_once :
-    Ojs.t -> string -> ?capture:bool ->
+    Ojs.t -> string ->
     (MouseEvent.t -> unit) ->
-     MapsEventListener.t
+    ?capture:bool ->
+    unit ->
+    MapsEventListener.t
     [@@js.global "google.maps.event.addDomListenerOnce"]
 
   val add_listener :
