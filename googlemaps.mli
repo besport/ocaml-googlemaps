@@ -116,6 +116,13 @@ module MVCArray: sig
 end
 [@js.scope "google.maps"]
 
+module MapsEventListener: sig
+  type t
+  val new_maps_event_listener : unit -> t [@@js.new]
+  val remove : t -> unit [@@js.call]
+end
+[@js.scope "google.maps"]
+
 module Attribution: sig
   type t
   val create :
@@ -629,6 +636,17 @@ module Map: sig
   val new_map :
     Converter.Element.t ->
     ?opts:MapOptions.t -> unit -> t [@@js.new]
+
+  val add_listener : t -> string -> (unit -> unit) -> MapsEventListener.t
+  [@@js.call]
+
+  [@@@js.stop]
+  val bounds_changed : t -> (unit -> unit) -> MapsEventListener.t
+  [@@@js.start]
+
+  [@@@js.implem
+    let bounds_changed t fn = add_listener t "bounds_changed" fn
+  ]
 
   val fit_bounds : t -> LatLngBounds.t -> unit [@@js.call]
   val get_bounds : t -> LatLngBounds.t [@@js.call]
@@ -1300,13 +1318,6 @@ module MouseEvent: sig
   val stop : t -> unit -> unit [@@js.call]
   val lat_lng : t -> LatLng.t [@@js.get]
   val set_lat_lng : t -> LatLng.t -> unit [@@js.set]
-end
-[@js.scope "google.maps"]
-
-module MapsEventListener: sig
-  type t
-  val new_maps_event_listener : unit -> t [@@js.new]
-  val remove : t -> unit [@@js.call]
 end
 [@js.scope "google.maps"]
 
