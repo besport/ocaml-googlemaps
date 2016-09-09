@@ -180,10 +180,11 @@ end
 module Size: sig
   type t
   val new_size :
-    ?width_unit:string ->
-    ?height_unit:string ->
     width:float ->
     height:float ->
+    ?width_unit:string ->
+    ?height_unit:string ->
+    unit ->
     t [@@js.new]
   val equals : t -> t -> bool [@@js.call]
   val to_string : t -> string [@@js.call]
