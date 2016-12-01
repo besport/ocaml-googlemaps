@@ -1402,19 +1402,6 @@ module GeocoderRequest: sig
     unit ->
     t
     [@@js.builder]
-  val address: t -> string [@@js.get]
-  val bounds: t -> LatLngBounds.t [@@js.get]
-  val component_restrictions: t -> GeocoderComponentRestrictions.t [@@js.get]
-  val location: t -> LatLng.t [@@js.get]
-  val place_id: t -> string [@@js.get]
-  val region: t -> string [@@js.get]
-  val set_address: t -> string -> unit [@@js.set]
-  val set_bounds: t -> LatLngBounds.t -> unit [@@js.set]
-  val set_component_restrictions:
-    t -> GeocoderComponentRestrictions.t -> unit [@@js.set]
-  val set_location: t -> LatLng.t -> unit [@@js.set]
-  val set_place_id: t -> string -> unit [@@js.set]
-  val set_region: t -> string -> unit [@@js.set]
 end
 
 module GeocoderAddressComponent: sig
