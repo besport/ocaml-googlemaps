@@ -1479,7 +1479,7 @@ module Geocoder: sig
   val new_geocoder : unit -> t [@@js.new]
   val geocode :
     t -> GeocoderRequest.t ->
-    (GeocoderResult.t list -> geocoder_status -> unit) ->
+    (GeocoderResult.t list option -> geocoder_status -> unit) ->
     unit [@@js.call]
 end
 [@js.scope "google.maps"]
