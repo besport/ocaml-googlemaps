@@ -643,10 +643,12 @@ module Map: sig
 
   [@@@js.stop]
   val bounds_changed : t -> (unit -> unit) -> MapsEventListener.t
+  val center_changed : t -> (unit -> unit) -> MapsEventListener.t
   [@@@js.start]
 
   [@@@js.implem
     let bounds_changed t fn = add_listener t "bounds_changed" fn
+    let center_changed t fn = add_listener t "center_changed" fn
   ]
 
   val fit_bounds : t -> LatLngBounds.t -> unit [@@js.call]
