@@ -557,6 +557,8 @@ module MapOptions: sig
     ?draggable:bool ->
     ?draggable_cursor:string ->
     ?dragging_cursor:string ->
+    ?fullscreen_control:bool ->
+    ?gesture_handling:string ->
     ?heading:float ->
     ?keyboard_shortcuts:bool ->
     ?map_maker:bool ->
@@ -570,6 +572,7 @@ module MapOptions: sig
     ?scale_controle:bool ->
     ?scrollwheel:bool ->
     ?sign_in_control:bool ->
+    ?street_view_control:bool ->
     ?tilt:float ->
     ?zoom:int ->
     ?zoom_control:bool ->
@@ -584,6 +587,8 @@ module MapOptions: sig
   val draggable: t -> bool [@@js.get]
   val draggable_cursor: t -> string [@@js.get]
   val dragging_cursor: t -> string [@@js.get]
+  val fullscreen_control: t -> bool [@@js.get]
+  val gesture_handling: t -> string [@@js.get]
   val heading: t -> float [@@js.get]
   val keyboard_shortcuts: t -> bool [@@js.get]
   val map_maker: t -> bool [@@js.get]
@@ -597,6 +602,7 @@ module MapOptions: sig
   val scale_controle: t -> bool [@@js.get]
   val scrollwheel: t -> bool [@@js.get]
   val sign_in_control: t -> bool [@@js.get]
+  val street_view_control: t -> bool [@@js.get]
   val tilt: t -> float [@@js.get]
   val zoom: t -> int [@@js.get]
   val zoom_control: t -> bool [@@js.get]
@@ -607,6 +613,8 @@ module MapOptions: sig
   val set_draggable: t -> bool -> unit [@@js.set]
   val set_draggable_cursor: t -> string -> unit [@@js.set]
   val set_dragging_cursor: t -> string -> unit [@@js.set]
+  val set_fullscreen_control: t -> bool -> unit [@@js.set]
+  val set_gesture_handling: t -> string -> unit [@@js.set]
   val set_heading: t -> float -> unit [@@js.set]
   val set_keyboard_shortcuts: t -> bool -> unit [@@js.set]
   val set_map_maker: t -> bool -> unit [@@js.set]
@@ -620,6 +628,7 @@ module MapOptions: sig
   val set_scale_controle: t -> bool -> unit [@@js.set]
   val set_scrollwheel: t -> bool -> unit [@@js.set]
   val set_sign_in_control: t -> bool -> unit [@@js.set]
+  val set_street_view_control: t -> bool -> unit [@@js.set]
   val set_tilt: t -> float -> unit [@@js.set]
   val set_zoom: t -> int -> unit [@@js.set]
   val set_zoom_control: t -> bool -> unit [@@js.set]
