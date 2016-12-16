@@ -569,7 +569,7 @@ module MapOptions: sig
     ?no_clear:bool ->
     ?pan_control:bool ->
     ?rotate_control:bool ->
-    ?scale_controle:bool ->
+    ?scale_control:bool ->
     ?scrollwheel:bool ->
     ?sign_in_control:bool ->
     ?street_view_control:bool ->
@@ -599,7 +599,7 @@ module MapOptions: sig
   val no_clear: t -> bool [@@js.get]
   val pan_control: t -> bool [@@js.get]
   val rotate_control: t -> bool [@@js.get]
-  val scale_controle: t -> bool [@@js.get]
+  val scale_control: t -> bool [@@js.get]
   val scrollwheel: t -> bool [@@js.get]
   val sign_in_control: t -> bool [@@js.get]
   val street_view_control: t -> bool [@@js.get]
@@ -625,7 +625,7 @@ module MapOptions: sig
   val set_no_clear: t -> bool -> unit [@@js.set]
   val set_pan_control: t -> bool -> unit [@@js.set]
   val set_rotate_control: t -> bool -> unit [@@js.set]
-  val set_scale_controle: t -> bool -> unit [@@js.set]
+  val set_scale_control: t -> bool -> unit [@@js.set]
   val set_scrollwheel: t -> bool -> unit [@@js.set]
   val set_sign_in_control: t -> bool -> unit [@@js.set]
   val set_street_view_control: t -> bool -> unit [@@js.set]
@@ -2670,7 +2670,7 @@ module DrawingManagerOptions: sig
   type t
   val create:
     ?circle_options:CircleOptions.t ->
-    ?drawing_controle:bool ->
+    ?drawing_control:bool ->
     ?drawing_control_options:DrawingControlOptions.t ->
     ?drawing_mode:overlay_type ->
     ?map:Map.t ->
@@ -2682,7 +2682,7 @@ module DrawingManagerOptions: sig
     t
     [@@js.builder]
   val circle_options: t -> CircleOptions.t [@@js.get]
-  val drawing_controle: t -> bool [@@js.get]
+  val drawing_control: t -> bool [@@js.get]
   val drawing_control_options: t -> DrawingControlOptions.t [@@js.get]
   val drawing_mode: t -> overlay_type [@@js.get]
   val map: t -> Map.t [@@js.get]
@@ -2691,7 +2691,7 @@ module DrawingManagerOptions: sig
   val polyline_options: t -> PolylineOptions.t [@@js.get]
   val rectangle_options: t -> RectangleOptions.t [@@js.get]
   val set_circle_options: t -> CircleOptions.t -> unit [@@js.set]
-  val set_drawing_controle: t -> bool -> unit [@@js.set]
+  val set_drawing_control: t -> bool -> unit [@@js.set]
   val set_drawing_control_options:
     t -> DrawingControlOptions.t -> unit [@@js.set]
   val set_drawing_mode: t -> overlay_type -> unit [@@js.set]
