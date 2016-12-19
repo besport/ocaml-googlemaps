@@ -547,6 +547,24 @@ end
   [@js.scope "google.maps"]
 (* End streetview *)
 
+module MapTypeControlOptions: sig
+  type t
+  val create:
+    ?map_type_ids:map_types list ->
+    ?position:control_position ->
+    ?style:map_type_control_style ->
+    unit ->
+    t
+    [@@js.builder]
+  val map_type_ids: t -> map_types list [@@js.get]
+  val position: t -> control_position [@@js.get]
+  val style: t -> map_type_control_style [@@js.get]
+  val set_map_type_ids: t -> map_types list -> unit [@@js.set]
+  val set_position: t -> control_position -> unit [@@js.set]
+  val set_style: t -> map_type_control_style -> unit [@@js.set]
+end
+
+
 module MapOptions: sig
   type t
   val create :
@@ -563,6 +581,7 @@ module MapOptions: sig
     ?keyboard_shortcuts:bool ->
     ?map_maker:bool ->
     ?map_type_control:bool ->
+    ?map_type_control_options:MapTypeControlOptions.t ->
     ?map_type_id:map_types ->
     ?max_zoom:int ->
     ?min_zoom:int ->
@@ -593,6 +612,7 @@ module MapOptions: sig
   val keyboard_shortcuts: t -> bool [@@js.get]
   val map_maker: t -> bool [@@js.get]
   val map_type_control: t -> bool [@@js.get]
+  val map_type_control_options: t -> MapTypeControlOptions.t [@@js.get]
   val map_type_id: t -> map_types [@@js.get]
   val max_zoom: t -> int [@@js.get]
   val min_zoom: t -> int [@@js.get]
@@ -619,6 +639,7 @@ module MapOptions: sig
   val set_keyboard_shortcuts: t -> bool -> unit [@@js.set]
   val set_map_maker: t -> bool -> unit [@@js.set]
   val set_map_type_control: t -> bool -> unit [@@js.set]
+  val set_map_type_control_options: t -> MapTypeControlOptions.t -> unit [@@js.set]
   val set_map_type_id: t -> map_types -> unit [@@js.set]
   val set_max_zoom: t -> int -> unit [@@js.set]
   val set_min_zoom: t -> int -> unit [@@js.set]
@@ -3323,25 +3344,6 @@ module ImageMapType: sig
 end
 [@js.scope "google.maps"]
 (* End ImageMap *)
-
-(* Map Type *)
-
-module MapTypeControlOptions: sig
-  type t
-  val create:
-    ?map_type_ids:map_types list ->
-    ?position:control_position ->
-    ?style:map_type_control_style ->
-    unit ->
-    t
-    [@@js.builder]
-  val map_type_ids: t -> map_types list [@@js.get]
-  val position: t -> control_position [@@js.get]
-  val style: t -> map_type_control_style [@@js.get]
-  val set_map_type_ids: t -> map_types list -> unit [@@js.set]
-  val set_position: t -> control_position -> unit [@@js.set]
-  val set_style: t -> map_type_control_style -> unit [@@js.set]
-end
 
 module MapTypeStyleElementType: sig
   type t
