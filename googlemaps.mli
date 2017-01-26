@@ -1395,6 +1395,67 @@ module Event: sig
 
   val trigger : Ojs.t -> string -> ?mousevent:MouseEvent.t -> unit -> unit
     [@@js.global "google.maps.event.trigger"]
+
+  [@@@js.stop]
+  val bounds_changed : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val center_changed : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val drag : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val dragend : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val dragstart : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val heading_changed : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val idle : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val maptypeid_changed : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val projection_changed : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val resize : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val tilesloaded : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val tilt_changed : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  val zoom_changed : Ojs.t -> (unit -> unit) -> MapsEventListener.t
+  [@@@js.start]
+
+  [@@@js.implem
+    val add_dom_listener_no_argument_internal :
+      Ojs.t -> string -> (unit -> unit) -> MapsEventListener.t
+    [@@js.global "google.maps.event.addDomListener"]
+
+    let bounds_changed elem callback =
+      add_dom_listener_no_argument_internal elem "bounds_changed" callback
+
+    let center_changed elem callback =
+      add_dom_listener_no_argument_internal elem "center_changed" callback
+
+    let drag elem callback =
+      add_dom_listener_no_argument_internal elem "drag" callback
+
+    let dragend elem callback =
+      add_dom_listener_no_argument_internal elem "dragend" callback
+
+    let dragstart elem callback =
+      add_dom_listener_no_argument_internal elem "dragstart" callback
+
+    let heading_changed elem callback =
+      add_dom_listener_no_argument_internal elem "heading_changed" callback
+
+    let idle elem callback =
+      add_dom_listener_no_argument_internal elem "idle" callback
+
+    let maptypeid_changed elem callback =
+      add_dom_listener_no_argument_internal elem "maptypeid_changed" callback
+
+    let projection_changed elem callback =
+      add_dom_listener_no_argument_internal elem "projection_changed" callback
+
+    let resize elem callback =
+      add_dom_listener_no_argument_internal elem "resize" callback
+
+    let tilesloaded elem callback =
+      add_dom_listener_no_argument_internal elem "tilesloaded" callback
+
+    let tilt_changed elem callback =
+      add_dom_listener_no_argument_internal elem "tilt_changed" callback
+
+    let zoom_changed elem callback =
+      add_dom_listener_no_argument_internal elem "zoom_changed" callback
+  ]
 end
 (* End events *)
 
