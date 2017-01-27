@@ -595,6 +595,7 @@ module MapOptions: sig
     ?tilt:float ->
     ?zoom:int ->
     ?zoom_control:bool ->
+    ?zoom_control_options:ZoomControlOptions.t ->
     unit ->
     t
     [@@js.builder]
@@ -626,6 +627,7 @@ module MapOptions: sig
   val tilt: t -> float [@@js.get]
   val zoom: t -> int [@@js.get]
   val zoom_control: t -> bool [@@js.get]
+  val zoom_control_options: t -> ZoomControlOptions.t [@@js.get]
   val set_background_color: t -> string -> unit [@@js.set]
   val set_center: t -> LatLng.t -> unit [@@js.set]
   val set_clickable_icons: t -> bool -> unit [@@js.set]
@@ -653,6 +655,7 @@ module MapOptions: sig
   val set_tilt: t -> float -> unit [@@js.set]
   val set_zoom: t -> int -> unit [@@js.set]
   val set_zoom_control: t -> bool -> unit [@@js.set]
+  val set_zoom_control_options: t -> ZoomControlOptions.t -> unit [@@js.set]
 end
 
 module MapTypeRegistry: sig
