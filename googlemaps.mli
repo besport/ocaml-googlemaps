@@ -1492,7 +1492,8 @@ module GeocoderResult: sig
     t
     [@@js.verbatim_names]
     [@@js.builder]
-  val address_components: t -> GeocoderAddressComponent.t [@@js.verbatim_names]
+  val address_components:
+    t -> GeocoderAddressComponent.t list [@@js.verbatim_names]
   val formatted_address: t -> string [@@js.verbatim_names]
   val geometry: t -> GeocoderGeometry.t [@@js.verbatim_names]
   val partial_match: t -> bool [@@js.verbatim_names]
