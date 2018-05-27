@@ -2553,6 +2553,9 @@ module Autocomplete: sig
   val set_component_restrictions :
     t -> ComponentRestrictions.t -> unit [@@js.call]
   val set_types : t -> string list -> unit [@@js.call]
+
+  val t_to_js : t -> Ojs.t
+  val t_of_js : Ojs.t -> t
 end
 [@js.scope "google.maps.places"]
 (* End autocompleter *)
@@ -3174,6 +3177,8 @@ module SearchBox: sig
   val get_bounds: t -> LatLngBounds.t [@@js.call]
   val get_places: t -> PlaceResult.t list [@@js.call]
   val set_bounds: t -> LatLngBounds.t -> unit [@@js.call]
+  val t_to_js : t -> Ojs.t
+  val t_of_js : Ojs.t -> t
 end
 [@js.scope "google.maps.places"]
 (* End searchbox *)
