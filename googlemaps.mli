@@ -2539,7 +2539,7 @@ module AutocompleteService: sig
   val get_place_predictions :
     t ->
     AutocompletionRequest.t ->
-    (AutocompletePrediction.t list -> places_service_status -> unit)
+    (AutocompletePrediction.t list option -> places_service_status -> unit)
     -> unit [@@js.call]
 
   val getQueryPredictions :
