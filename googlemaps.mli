@@ -2208,6 +2208,7 @@ module PlaceDetailsRequest: sig
   type t
   val create:
     ?place_id:string ->
+    ?fields:string list ->
     ?session_token:AutocompleteSessionToken.t ->
     unit ->
     t
