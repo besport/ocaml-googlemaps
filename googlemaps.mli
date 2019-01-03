@@ -2198,10 +2198,18 @@ module PlaceResult: sig
   val set_website: t -> string -> unit [@@js.set]
 end
 
+module AutocompleteSessionToken : sig
+  type t
+  val new_autocomplete_session_token : unit -> t [@@js.new]
+end
+[@js.scope "google.maps.places"]
+
 module PlaceDetailsRequest: sig
   type t
   val create:
     ?place_id:string ->
+    ?fields:string list ->
+    ?session_token:AutocompleteSessionToken.t ->
     unit ->
     t
     [@@js.builder]
@@ -2503,6 +2511,7 @@ module AutocompletionRequest: sig
     ?location:LatLng.t ->
     ?offset:int ->
     ?radius:float ->
+    ?session_token:AutocompleteSessionToken.t ->
     ?types:string list ->
     unit ->
     t
@@ -2530,7 +2539,7 @@ module AutocompleteService: sig
   val get_place_predictions :
     t ->
     AutocompletionRequest.t ->
-    (AutocompletePrediction.t list -> places_service_status -> unit)
+    (AutocompletePrediction.t list option -> places_service_status -> unit)
     -> unit [@@js.call]
 
   val getQueryPredictions :
