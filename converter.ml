@@ -1,3 +1,5 @@
+open Js_of_ocaml
+
 module Element = struct
 
   type t = Dom_html.element Js.t
