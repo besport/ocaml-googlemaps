@@ -547,6 +547,59 @@ end
   [@js.scope "google.maps"]
 (* End streetview *)
 
+(* Data *)
+module Data: sig
+
+  (* type styling_function = Feature.t -> StyleOptions.t *)
+
+  module Geometry: sig
+    type t
+    (* val get_type: t -> string [@@js.call] *)
+  end
+
+  module Polygon: sig
+    type t
+    val new_polygon : LatLng.t list list -> t
+    [@@js.new]
+  end
+  [@js.scope "google.maps.Data"]
+
+  val geometry_of_polygon: Polygon.t -> Geometry.t [@@js.cast]
+
+  module FeatureOptions : sig
+    type t
+    val create : ?geometry:Geometry.t -> unit -> t
+    [@@js.builder]
+  end
+
+  module Feature : sig
+    type t
+    val new_feature : ?options:FeatureOptions.t -> unit -> t
+    [@@js.new]
+  end
+  [@js.scope "google.maps.Data"]
+
+  (* module DataOptions: sig *)
+  (*   type t *)
+  (*   val create: *)
+  (*     ?control_position:control_position -> *)
+  (*     ?controls:string list -> *)
+  (*     ?drawing_mode:string -> *)
+  (*     ?feature_factory:(Geometry.t -> Feature.t) -> *)
+  (*     ?map:Map.t -> *)
+  (*     ?style:styling_function -> *)
+  (*     unit -> *)
+  (*     t *)
+  (*     [@@js.builder] *)
+  (* end *)
+
+  type t
+  (* val new_data: ?opts:DataOptions.t -> t [@@js.new] *)
+  val add: t -> ?feature:Feature.t -> unit -> Feature.t [@@js.call]
+
+end
+(* End data *)
+
 module MapTypeControlOptions: sig
   type t
   val create:
@@ -839,7 +892,7 @@ module Map: sig
   val set_zoom : t -> int -> unit [@@js.call]
   (** Attributes need getter and setter **)
   val controls: t ->  MVCArray.t list [@@js.get]
-  (*val data: t -> Data.t [@@js.get]*)
+  val data: t -> Data.t [@@js.get]
   val map_types: t -> MapTypeRegistry.t [@@js.get]
   val overlay_map_types: t -> MVCArray.t [@@js.get]
   val set_controls: t ->  MVCArray.t list -> unit [@@js.set]
@@ -3611,36 +3664,6 @@ module TrafficLayer: sig
 end
   [@js.scope "google.maps"]
 (* End Traffic Layer *)
-
-(* Data *)
-(*module Data: sig
-
-  type styling_function = Feature.t -> StyleOptions.t
-
-  module Geometry: sig
-    type t
-    val get_type: t -> string [@@js.call]
-  end
-
-  module DataOptions: sig
-    type t
-    val create:
-      ?control_position:control_position ->
-      ?controls:string list ->
-      ?drawing_mode:string ->
-      ?feature_factory:(Geometry.t -> Feature.t) ->
-      ?map:Map.t ->
-      ?style:styling_function ->
-      unit ->
-      t
-      [@@js.builder]
-  end
-
-  type t
-  val new_data: ?opts:DataOptions.t -> t [@@js.new]
-end
-  [@js.scope "google.maps"] *)
-(* End data *)
 
 (* Namespaces *)
 module Encoding: sig
