@@ -564,6 +564,136 @@ module MapTypeControlOptions: sig
   val set_style: t -> map_type_control_style -> unit [@@js.set]
 end
 
+module MapTypeStyler: sig
+  type t
+  val create:
+    ?color:string ->
+    ?gamma:float ->
+    ?hue:string ->
+    ?invert_lightness:bool ->
+    ?lightness:float ->
+    ?saturation:float ->
+    ?visibility:string ->
+    ?weight:int ->
+    unit ->
+    t
+    [@@js.builder]
+  val color: t -> string [@@js.get]
+  val gamma: t -> float [@@js.get]
+  val hue: t -> string [@@js.get]
+  val invert_lightness: t -> bool [@@js.get]
+  val lightness: t -> float [@@js.get]
+  val saturation: t -> float [@@js.get]
+  val visibility: t -> string [@@js.get]
+  val weight: t -> int [@@js.get]
+  val set_color: t -> string -> unit [@@js.set]
+  val set_gamma: t -> float -> unit [@@js.set]
+  val set_hue: t -> string -> unit [@@js.set]
+  val set_invert_lightness: t -> bool -> unit [@@js.set]
+  val set_lightness: t -> float -> unit [@@js.set]
+  val set_saturation: t -> float -> unit [@@js.set]
+  val set_visibility: t -> string -> unit [@@js.set]
+  val set_weight: t -> int -> unit [@@js.set]
+end
+
+module MapTypeStyleElementType: sig
+  type t =
+    | All                [@js "all"]
+    | Geometry           [@js "geometry"]
+    | Geometry_fill      [@js "geometry.fill"]
+    | Geometry_stroke    [@js "geometry.stroke"]
+    | Labels             [@js "labels"]
+    | Labels_icon        [@js "labels.icon"]
+    | Labels_text        [@js "labels.text"]
+    | Labels_text_fill   [@js "labels.text.fill"]
+    | Labels_text_stroke [@js "labels.text.stroke"]
+  [@@ js.enum]
+end
+
+module MapTypeStyleFeatureType: sig
+  type t =
+    | All                           [@js "all"]
+    | Administrative                [@js "administrative"]
+    | Administrative_country        [@js "administrative.country"]
+    | Administrative_landparcel     [@js "administrative.land_parcel"]
+    | Administrative_locality       [@js "administrative.locality"]
+    | Administrative_neighborhood   [@js "administrative.neighborhood"]
+    | Administrative_province       [@js "administrative.province"]
+    | Landscape                     [@js "landscape"]
+    | Landscape_manmade             [@js "landscape.man_made"]
+    | Landscape_natural             [@js "landscape.natural"]
+    | Landscape_natural_landcover   [@js "landscape.natural.landcover"]
+    | Landscape_natural_terrain     [@js "landscape.natural.terrain"]
+    | Poi                           [@js "poi"]
+    | Poi_attraction                [@js "poi.attraction"]
+    | Poi_business                  [@js "poi.business"]
+    | Poi_government                [@js "poi.government"]
+    | Poi_medical                   [@js "poi.medical"]
+    | Poi_park                      [@js "poi.park"]
+    | Poi_placeofworship            [@js "poi.place_of_worship"]
+    | Poi_school                    [@js "poi.school"]
+    | Poi_sportscomplex             [@js "poi.sports_complex"]
+    | Road                          [@js "road"]
+    | Road_arterial                 [@js "road.arterial"]
+    | Road_highway                  [@js "road.highway"]
+    | Road_highway_controlledaccess [@js "road.highway.controlled_access"]
+    | Road_local                    [@js "road.local"]
+    | Transit                       [@js "transit"]
+    | Transit_line                  [@js "transit.line"]
+    | Transit_station               [@js "transit.station"]
+    | Transit_station_airport       [@js "transit.station.airport"]
+    | Transit_station_bus           [@js "transit.station.bus"]
+    | Transit_station_rail          [@js "transit.station.rail"]
+    | Water                         [@js "water"]
+  [@@ js.enum]
+end
+
+module MapTypeStyle: sig
+  type t
+  val create:
+    ?element_type:MapTypeStyleElementType.t ->
+    ?feature_type:MapTypeStyleFeatureType.t ->
+    ?stylers:MapTypeStyler.t list ->
+    unit ->
+    t
+    [@@js.builder]
+  val element_type: t -> MapTypeStyleElementType.t [@@js.get]
+  val feature_type: t -> MapTypeStyleFeatureType.t [@@js.get]
+  val stylers: t -> MapTypeStyler.t list [@@js.get]
+  val set_element_type:
+    t -> MapTypeStyleElementType.t -> unit [@@js.set]
+  val set_feature_type:
+    t -> MapTypeStyleFeatureType.t -> unit [@@js.set]
+  val set_stylers: t -> MapTypeStyler.t list -> unit [@@js.set]
+end
+
+module MapType: sig
+  type t
+  val new_map_type: unit -> t [@@js.new]
+  val get_tile:
+    t ->
+    tile_coord:Point.t ->
+    zoom:int ->
+    Converter.Element.t ->
+    unit [@@js.call]
+  (** Node **)
+  val release_tile: t -> Ojs.t -> unit [@@js.call]
+  val alt : t -> string [@@js.get]
+  val max_zoom : t -> int [@@js.get]
+  val min_zoom : t -> int [@@js.get]
+  val name : t -> string [@@js.get]
+  val projection : t -> Projection.t [@@js.get]
+  val radius : t -> float [@@js.get]
+  val tile_size : t -> Size.t [@@js.get]
+  val set_alt : t -> string -> unit [@@js.set]
+  val set_max_zoom : t -> int -> unit [@@js.set]
+  val set_min_zoom : t -> int -> unit [@@js.set]
+  val set_name : t -> string -> unit [@@js.set]
+  val set_projection : t -> Projection.t -> unit [@@js.set]
+  val set_radius : t -> float -> unit [@@js.set]
+  val set_tile_size : t -> Size.t -> unit [@@js.set]
+end
+[@js.scope "google.maps"]
 
 module MapOptions: sig
   type t
@@ -592,6 +722,7 @@ module MapOptions: sig
     ?scrollwheel:bool ->
     ?sign_in_control:bool ->
     ?street_view_control:bool ->
+    ?styles:MapTypeStyle.t list ->
     ?tilt:float ->
     ?zoom:int ->
     ?zoom_control:bool ->
@@ -745,37 +876,6 @@ module MapCanvasProjection: sig
 end
 [@js.scope "google.maps"]
 
-module MapTypeStyler: sig
-  type t
-  val create:
-    ?color:string ->
-    ?gamma:float ->
-    ?hue:string ->
-    ?invert_lightness:bool ->
-    ?lightness:float ->
-    ?saturation:float ->
-    ?visibility:string ->
-    ?weight:int ->
-    unit ->
-    t
-    [@@js.builder]
-  val color: t -> string [@@js.get]
-  val gamma: t -> float [@@js.get]
-  val hue: t -> string [@@js.get]
-  val invert_lightness: t -> bool [@@js.get]
-  val lightness: t -> float [@@js.get]
-  val saturation: t -> float [@@js.get]
-  val visibility: t -> string [@@js.get]
-  val weight: t -> int [@@js.get]
-  val set_color: t -> string -> unit [@@js.set]
-  val set_gamma: t -> float -> unit [@@js.set]
-  val set_hue: t -> string -> unit [@@js.set]
-  val set_invert_lightness: t -> bool -> unit [@@js.set]
-  val set_lightness: t -> float -> unit [@@js.set]
-  val set_saturation: t -> float -> unit [@@js.set]
-  val set_visibility: t -> string -> unit [@@js.set]
-  val set_weight: t -> int -> unit [@@js.set]
-end
 (* End map *)
 
 module BicyclingLayer: sig
@@ -3362,63 +3462,6 @@ module ImageMapType: sig
 end
 [@js.scope "google.maps"]
 (* End ImageMap *)
-
-module MapTypeStyleElementType: sig
-  type t
-    (* SUM TYPE ! *)
-end
-
-module MapTypeStyleFeatureType: sig
-  type t
-    (* SUM TYPE ! *)
-end
-
-module MapTypeStyle: sig
-  type t
-  val create:
-    ?element_type:MapTypeStyleElementType.t ->
-    ?feature_type:MapTypeStyleFeatureType.t ->
-    ?stylers:MapTypeStyler.t list ->
-    unit ->
-    t
-    [@@js.builder]
-  val element_type: t -> MapTypeStyleElementType.t [@@js.get]
-  val feature_type: t -> MapTypeStyleFeatureType.t [@@js.get]
-  val stylers: t -> MapTypeStyler.t list [@@js.get]
-  val set_element_type:
-    t -> MapTypeStyleElementType.t -> unit [@@js.set]
-  val set_feature_type:
-    t -> MapTypeStyleFeatureType.t -> unit [@@js.set]
-  val set_stylers: t -> MapTypeStyler.t list -> unit [@@js.set]
-end
-
-module MapType: sig
-  type t
-  val new_map_type: unit -> t [@@js.new]
-  val get_tile:
-    t ->
-    tile_coord:Point.t ->
-    zoom:int ->
-    Converter.Element.t ->
-    unit [@@js.call]
-  (** Node **)
-  val release_tile: t -> Ojs.t -> unit [@@js.call]
-  val alt : t -> string [@@js.get]
-  val max_zoom : t -> int [@@js.get]
-  val min_zoom : t -> int [@@js.get]
-  val name : t -> string [@@js.get]
-  val projection : t -> Projection.t [@@js.get]
-  val radius : t -> float [@@js.get]
-  val tile_size : t -> Size.t [@@js.get]
-  val set_alt : t -> string -> unit [@@js.set]
-  val set_max_zoom : t -> int -> unit [@@js.set]
-  val set_min_zoom : t -> int -> unit [@@js.set]
-  val set_name : t -> string -> unit [@@js.set]
-  val set_projection : t -> Projection.t -> unit [@@js.set]
-  val set_radius : t -> float -> unit [@@js.set]
-  val set_tile_size : t -> Size.t -> unit [@@js.set]
-end
-[@js.scope "google.maps"]
 
 module MapPanes: sig
   type t
