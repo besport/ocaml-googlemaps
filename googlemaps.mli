@@ -1297,7 +1297,7 @@ module PolygonOptions: sig
     ?fill_opacity:float ->
     ?geodesic:bool ->
     ?map:Map.t ->
-    ?path:LatLng.t list ->
+    ?paths:LatLng.t list list ->
     ?stroke_color:string ->
     ?stroke_opacity:float ->
     ?stroke_weight:float ->
