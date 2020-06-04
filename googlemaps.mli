@@ -2531,10 +2531,10 @@ end
 module ComponentRestrictions: sig
   type t
   val create:
-    country:string ->
+    country:string list ->
     t [@@js.builder]
-  val country: t -> string [@@js.get]
-  val set_country: t -> string -> unit [@@js.set]
+  val country: t -> string list [@@js.get]
+  val set_country: t -> string list -> unit [@@js.set]
 end
 
 module PredictionSubstring: sig

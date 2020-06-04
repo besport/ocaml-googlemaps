@@ -1,6 +1,6 @@
 opam-version: "1.2"
 name: "ocaml-googlemaps"
-version: "2.3"
+version: "3.0"
 maintainer: "o-marshmallow"
 authors: "o-marshmallow"
 homepage: "https://github.com/besport/ocaml-googlemaps"
