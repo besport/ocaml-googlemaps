@@ -1,0 +1,11 @@
+(rule
+ (targets googlemaps.ml)
+ (deps googlemaps.mli)
+ (action (run %{bin:gen_js_api} %{deps})))
+
+(library
+ (public_name ocaml-googlemaps)
+ (name googlemaps)
+ (modes byte)
+ (libraries gen_js_api js_of_ocaml)
+)

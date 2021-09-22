@@ -1,18 +1,19 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "ocaml-googlemaps"
-version: "2.3"
+version: "3.0"
 maintainer: "o-marshmallow"
 authors: "o-marshmallow"
 homepage: "https://github.com/besport/ocaml-googlemaps"
 bug-reports: "https://github.com/besport/ocaml-googlemaps/issues"
 license: "undefined"
+description: "Binding to the `Googlemaps` plugin using gen_js_api"
+synopsis: "Binding to the `Googlemaps` plugin using gen_js_api"
 dev-repo: "https://github.com/besport/ocaml-googlemaps.git"
-build: [
-  [make]
-]
-install: [make "install"]
-remove: ["ocamlfind" "remove" "ocaml-googlemaps"]
+build: [[ "dune" "build" "-j" jobs "-p" name "@install" ]]
 depends: [
+  "ocaml" { >= "4.08.0"}
+  "dune" {>= "2.8"}
   "gen_js_api"
   "ocamlfind" {build}
+  "js_of_ocaml"
 ]

@@ -1,3 +1,0 @@
-version = "1.0"
-description = "Binding to google map using gen_js_api"
-archive(byte) = "converter.cma googlemaps.cma"
