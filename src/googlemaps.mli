@@ -164,9 +164,9 @@ module LatLng : sig
   val lng : t -> float [@@js.call]
 
   (* Unsafe *)
-  val t_to_js : t -> Ojs.t
+  [@@@js.implem let t_to_js = Obj.magic]
 
-  val t_of_js : Ojs.t -> t
+  [@@@js.implem let t_of_js = Obj.magic]
 end [@js.scope "google.maps"]
 
 module LatLngBounds : sig
@@ -2532,13 +2532,13 @@ module DirectionsStep : sig
 
   val distance : t -> Distance.t
 
-  val duration : t -> Duration.t [@@js.get]
+  val get_duration : t -> Duration.t [@@js.get]
 
   val get_end_location : t -> LatLng.t [@@js.verbatim_names] [@@js.get]
 
   val instructions : t -> string
 
-  val path : t -> LatLng.t list [@@js.get]
+  val get_path : t -> LatLng.t list [@@js.get]
 
   val get_start_location : t -> LatLng.t [@@js.verbatim_names] [@@js.get]
 
@@ -2558,7 +2558,8 @@ module DirectionsStep : sig
 
   val set_path : t -> LatLng.t list -> unit
 
-  val set_start_location : t -> LatLng.t -> unit [@@js.verbatim_names]
+  val set_start_location : t -> LatLng.t -> unit
+    [@@js.verbatim_names] [@@js.set]
 
   val set_steps : t -> t list -> unit
 
