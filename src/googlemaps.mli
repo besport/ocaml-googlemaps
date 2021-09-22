@@ -327,7 +327,7 @@ module StreetViewControlOptions : sig
 
   val create : position:control_position -> t [@@js.builder]
 
-  val position : t -> control_position [@@js.get]
+  val get_position : t -> control_position [@@js.get]
 
   val set_position : t -> control_position -> unit [@@js.set]
 end
@@ -700,14 +700,17 @@ module Data : sig
   module Geometry : sig
     type t
 
+    val get_t : unit -> t [@@js.get "google.maps.Geometry"]
+
     (* val get_type: t -> string [@@js.call] *)
   end
 
   module Polygon : sig
     type t
 
-    val new_polygon : LatLng.t list list -> t [@@js.new]
-  end [@js.scope "google.maps.Data"]
+    val new_polygon : LatLng.t list list -> t
+      [@@js.new "google.maps.Data.Polygon"]
+  end
 
   val geometry_of_polygon : Polygon.t -> Geometry.t [@@js.cast]
 
@@ -2528,13 +2531,13 @@ module DirectionsStep : sig
 
   val duration : t -> Duration.t
 
-  val end_location : t -> LatLng.t [@@js.verbatim_names]
+  val get_end_location : t -> LatLng.t [@@js.verbatim_names] [@@js.get]
 
   val instructions : t -> string
 
   val path : t -> LatLng.t list
 
-  val start_location : t -> LatLng.t [@@js.verbatim_names]
+  val get_start_location : t -> LatLng.t [@@js.verbatim_names] [@@js.get]
 
   val steps : t -> t list
 
