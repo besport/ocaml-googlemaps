@@ -316,7 +316,7 @@ module StreetViewAddressControlOptions : sig
   type t
 
   val create : position:control_position -> t
-    [@@js.builder "google.maps.StreetViewAddressControlOptions"]
+    [@@js.builder] [@@js.verbatim_names]
 
   val position : t -> control_position [@@js.get]
 
@@ -556,7 +556,7 @@ module StreetViewPanoramaOptions : sig
     ?zoom_control_options:ZoomControlOptions.t ->
     unit ->
     t
-    [@@js.builder]
+    [@@js.builder] [@@js.verbatim_names]
 
   val address_control : t -> bool [@@js.get]
 
@@ -1323,7 +1323,7 @@ module MarkerOptions : sig
     ?z_index:float ->
     unit ->
     t
-    [@@js.builder]
+    [@@js.builder] [@@js.verbatim_names]
 
   val anchor_point : t -> Point.t [@@js.get]
 
