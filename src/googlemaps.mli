@@ -315,7 +315,8 @@ end
 module StreetViewAddressControlOptions : sig
   type t
 
-  val create : position:control_position -> t [@@js.builder]
+  val create : position:control_position -> t
+    [@@js.builder "google.maps.StreetViewAddressControlOptions"]
 
   val position : t -> control_position [@@js.get]
 
@@ -325,7 +326,8 @@ end
 module StreetViewControlOptions : sig
   type t
 
-  val create : position:control_position -> t [@@js.builder]
+  val create : position:control_position -> t
+    [@@js.builder "google.maps.streetViewControlOptions"]
 
   val get_position : t -> control_position [@@js.get]
 
