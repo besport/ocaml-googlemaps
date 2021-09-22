@@ -316,18 +316,19 @@ module StreetViewAddressControlOptions : sig
   type t
 
   val create : position:control_position -> t
-    [@@js.builder] [@@js.verbatim_names]
+    [@@js.builder "google.maps.StreetViewAddressControlOptions"]
+    [@@js.verbatim_names]
 
-  val position : t -> control_position [@@js.get]
+  val position : t -> control_position [@@js.get "position"]
 
-  val set_position : t -> control_position -> unit [@@js.set]
+  val set_position : t -> control_position -> unit [@@js.set "position"]
 end
 
 module StreetViewControlOptions : sig
   type t
 
   val create : position:control_position -> t
-    [@@js.builder "google.maps.streetViewControlOptions"]
+    [@@js.builder "google.maps.streetViewControlOptions"] [@@js.verbatim_names]
 
   val get_position : t -> control_position [@@js.get]
 
@@ -2531,13 +2532,13 @@ module DirectionsStep : sig
 
   val distance : t -> Distance.t
 
-  val duration : t -> Duration.t
+  val duration : t -> Duration.t [@@js.get]
 
   val get_end_location : t -> LatLng.t [@@js.verbatim_names] [@@js.get]
 
   val instructions : t -> string
 
-  val path : t -> LatLng.t list
+  val path : t -> LatLng.t list [@@js.get]
 
   val get_start_location : t -> LatLng.t [@@js.verbatim_names] [@@js.get]
 
@@ -2549,7 +2550,7 @@ module DirectionsStep : sig
 
   val set_distance : t -> Distance.t -> unit
 
-  val set_duration : t -> Duration.t -> unit
+  val set_duration : t -> Duration.t -> unit [@@js.set]
 
   val set_end_location : t -> LatLng.t -> unit [@@js.verbatim_names]
 
@@ -2563,7 +2564,8 @@ module DirectionsStep : sig
 
   val set_transit : t -> TransitDetails.t -> unit
 
-  val set_travel_mode : t -> travel_mode -> unit [@@js.verbatim_names]
+  val set_travel_mode : t -> travel_mode -> unit
+    [@@js.verbatim_names] [@@js.set]
 end
 
 module DirectionsGeocodedWaypoint : sig
