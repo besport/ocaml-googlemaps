@@ -14,5 +14,6 @@ install: [make "install"]
 remove: ["ocamlfind" "remove" "ocaml-googlemaps"]
 depends: [
   "gen_js_api"
+  "js_of_ocaml"
   "ocamlfind" {build}
 ]
