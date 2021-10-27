@@ -98,7 +98,7 @@ module MVCObject: sig
   val unbind : t -> string [@@js.call]
   val unbind_all : t -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module MVCArray: sig
   type t
@@ -114,14 +114,14 @@ module MVCArray: sig
   val remove_at : t -> int -> Ojs.t [@@js.call]
   val set_at : t -> int -> Ojs.t -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module MapsEventListener: sig
   type t
   val new_maps_event_listener : unit -> t [@@js.new]
   val remove : t -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module Attribution: sig
   type t
@@ -148,7 +148,7 @@ module LatLng: sig
   val t_to_js : t -> Ojs.t
   val t_of_js : Ojs.t -> t
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module LatLngBounds: sig
   type t
@@ -164,7 +164,7 @@ module LatLngBounds: sig
   val to_string: t -> unit -> string [@@js.call]
   val union: t -> t -> t [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module Point: sig
   type t
@@ -175,7 +175,7 @@ module Point: sig
   val set_x : t -> float -> unit [@@js.set]
   val set_y : t -> float -> unit [@@js.set]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module Size: sig
   type t
@@ -193,7 +193,7 @@ module Size: sig
   val set_height : t -> float -> unit [@@js.set]
   val set_width : t -> float -> unit [@@js.set]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module Icon: sig
   type t
@@ -226,7 +226,7 @@ module Projection: sig
   val from_lat_lng_to_point : t -> LatLng.t -> Point.t
   val from_point_to_lat_lng : t -> Point.t -> LatLng.t
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 (* Map *)
 
@@ -346,7 +346,7 @@ module StreetViewTileData: sig
   val set_tile_size : t -> Size.t -> unit [@@js.set]
   val set_world_size : t -> Size.t -> unit [@@js.set]
 end
-[@ js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module StreetViewPanoramaData: sig
   type t
@@ -419,7 +419,7 @@ module StreetViewService: sig
     unit
     [@@js.call "getPanorama"]
 end
-[@ js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module PanControlOptions: sig
   type t
@@ -544,7 +544,7 @@ module StreetViewPanorama: sig
   val controls : t -> MVCArray.t list [@@js.get]
   val set_controls : t -> MVCArray.t list -> unit [@@js.set]
 end
-  [@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End streetview *)
 
 (* Data *)
@@ -562,7 +562,7 @@ module Data: sig
     val new_polygon : LatLng.t list list -> t
     [@@js.new]
   end
-  [@js.scope "google.maps.Data"]
+  [@js.scope "Data"][@js.scope "maps"][@js.scope "google"]
 
   val geometry_of_polygon: Polygon.t -> Geometry.t [@@js.cast]
 
@@ -577,7 +577,7 @@ module Data: sig
     val new_feature : ?options:FeatureOptions.t -> unit -> t
     [@@js.new]
   end
-  [@js.scope "google.maps.Data"]
+  [@js.scope "Data"][@js.scope "maps"][@js.scope "google"]
 
   (* module DataOptions: sig *)
   (*   type t *)
@@ -746,7 +746,7 @@ module MapType: sig
   val set_radius : t -> float -> unit [@@js.set]
   val set_tile_size : t -> Size.t -> unit [@@js.set]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module MapOptions: sig
   type t
@@ -847,7 +847,7 @@ module MapTypeRegistry: sig
   val new_map_type_registry: unit -> t [@@js.new]
   val set: t -> id:string -> map_type:map_types option -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module Map: sig
   type t
@@ -903,7 +903,7 @@ module Map: sig
   val t_to_js : t -> Ojs.t
   val t_of_js : Ojs.t -> t
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 
 module StreetViewCoverageLayer: sig
@@ -912,7 +912,7 @@ module StreetViewCoverageLayer: sig
   val get_map: t -> Map.t [@@js.call]
   val set_map: t -> Map.t -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module MapCanvasProjection: sig
   type t
@@ -927,7 +927,7 @@ module MapCanvasProjection: sig
     t -> LatLng.t -> Point.t [@@js.call]
   val get_world_width: t -> int [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 (* End map *)
 
@@ -937,7 +937,7 @@ module BicyclingLayer: sig
   val get_map : t -> Map.t [@@js.call]
   val set_map : t -> Map.t -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module MarkerLabel: sig
   type t
@@ -1132,7 +1132,7 @@ module Marker: sig
   val t_to_js : t -> Ojs.t
   val t_of_js : Ojs.t -> t
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module InfoWindowOptions: sig
   type t
@@ -1183,7 +1183,7 @@ module InfoWindow: sig
   val set_position : t -> LatLng.t -> unit [@@js.call]
   val set_z_index : t -> float -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 
 
@@ -1267,7 +1267,7 @@ module Polyline: sig
   val set_path_mvcarray : t -> MVCArray.t -> unit [@@js.call "setPath"]
   val set_visible : t -> bool -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 (* Polygon *)
 module PolyMouseEvent: sig
@@ -1354,7 +1354,7 @@ module Polygon: sig
   val set_paths_mvcarray : t -> MVCArray.t -> unit [@@js.call "setPaths"]
   val set_visible : t -> bool -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End polygon *)
 
 (* Rectangle *)
@@ -1424,7 +1424,7 @@ module Rectangle: sig
   val set_options : t -> RectangleOptions.t -> unit [@@js.call]
   val set_visible : t -> bool -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End rectangle *)
 
 (* Circle *)
@@ -1497,7 +1497,7 @@ module Circle: sig
   val set_radius: t -> float -> unit [@@js.call]
   val set_visible: t -> bool -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End Circle *)
 
 (* Events *)
@@ -1508,7 +1508,7 @@ module MouseEvent: sig
   val lat_lng : t -> LatLng.t [@@js.get]
   val set_lat_lng : t -> LatLng.t -> unit [@@js.set]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module Event: sig
   val add_dom_listener :
@@ -1671,7 +1671,7 @@ module Geocoder: sig
     (GeocoderResult.t list option -> geocoder_status -> unit) ->
     unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End geocoding *)
 
 (* Distance, time, distance *)
@@ -2042,7 +2042,7 @@ module DirectionsRenderer: sig
   val set_panel : t -> Ojs.t -> unit
   val set_route_index : t -> int -> unit
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 type traffic_model =
   | Best_guess  [@js "bestguess"]
@@ -2075,7 +2075,7 @@ module TransitLayer: sig
   val get_map: t -> Map.t [@@js.call]
   val set_map: t -> Map.t -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 
 module TransitOptions: sig
   type t
@@ -2191,7 +2191,7 @@ module DirectionsService: sig
      unit) ->
     unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End direction *)
 
 (* Place *)
@@ -2259,7 +2259,7 @@ module PlacePhoto: sig
     [@@js.verbatim_names]
   val set_width: t -> int -> unit [@@js.set]
 end
-[@js.scope "google.maps.places"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 
 module PlaceGeometry: sig
   type t
@@ -2355,7 +2355,7 @@ module AutocompleteSessionToken : sig
   type t
   val new_autocomplete_session_token : unit -> t [@@js.new]
 end
-[@js.scope "google.maps.places"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 
 module PlaceDetailsRequest: sig
   type t
@@ -2394,7 +2394,7 @@ module PlaceSearchPagination: sig
   val has_next_page : t -> bool [@@js.get]
   val set_has_next_page : t -> bool -> unit [@@js.set]
 end
-[@js.scope "google.maps.places"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 
 type rank_by =
   | Prominence [@js 0]
@@ -2522,7 +2522,7 @@ module PlacesService: sig
      unit) ->
     unit [@@js.call]
 end
-[@js.scope "google.maps.places"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 (* End Place *)
 
 
@@ -2701,7 +2701,7 @@ module AutocompleteService: sig
     (QueryAutocompletePrediction.t list -> places_service_status -> unit) ->
     unit [@@js.call]
 end
-[@js.scope "google.maps.places"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 
 module Autocomplete: sig
   type t
@@ -2719,7 +2719,7 @@ module Autocomplete: sig
   val t_to_js : t -> Ojs.t
   val t_of_js : Ojs.t -> t
 end
-[@js.scope "google.maps.places"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 (* End autocompleter *)
 
 (* Distance Matrix *)
@@ -2838,7 +2838,7 @@ module DistanceMatrixService: sig
      unit) ->
     unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End DistanceMatrix *)
 
 (* Drawing *)
@@ -2902,7 +2902,7 @@ module DrawingManager: sig
   val set_map : t -> Map.t -> unit [@@js.call]
   val set_options : t -> DrawingManagerOptions.t -> unit [@@js.call]
 end
-[@js.scope "google.maps.drawing"]
+[@js.scope "drawing"][@js.scope "maps"][@js.scope "google"]
 (* End drawing *)
 
 module WeightedLocation: sig
@@ -2986,7 +2986,7 @@ module ElevationService: sig
      unit) ->
     unit [@@js.call]
 end
-  [@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End Elevation *)
 
 (* Fusion *)
@@ -3146,7 +3146,7 @@ module FusionTablesLayer: sig
   val set_map: t -> Map.t -> unit [@@js.call]
   val set_options: t -> FusionTablesLayerOptions.t -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End Fusion *)
 
 (* Kml *)
@@ -3288,7 +3288,7 @@ module KmlLayer: sig
   val set_url: t -> string -> unit [@@js.call]
   val set_z_zindex: t -> int -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End Kml *)
 
 (* MaxZoom *)
@@ -3318,7 +3318,7 @@ module MaxZoomService: sig
     t -> LatLng.t -> (MaxZoomResult.t -> unit) -> unit
     [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End MaxZoom *)
 
 (* SearchBox *)
@@ -3342,7 +3342,7 @@ module SearchBox: sig
   val t_to_js : t -> Ojs.t
   val t_of_js : Ojs.t -> t
 end
-[@js.scope "google.maps.places"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 (* End searchbox *)
 
 
@@ -3407,7 +3407,7 @@ module GroundOverlay: sig
   val set_map: t -> Map.t -> unit [@@js.call]
   val set_opacity: t -> float -> unit [@@js.call]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End Ground overlay *)
 
 (* HeatmapLayer *)
@@ -3453,7 +3453,7 @@ module HeatmapLayer: sig
   val set_map: t -> Map.t -> unit [@@js.call]
   val set_options: t -> HeatmapLayerOptions.t -> unit [@@js.call]
 end
-[@js.scope "google.maps.visualization"]
+[@js.scope "visualization"][@js.scope "maps"][@js.scope "google"]
 (* End HeatMapLayer *)
 
 
@@ -3513,7 +3513,7 @@ module ImageMapType: sig
   val set_radius : t -> float -> unit [@@js.set]
   val set_tile_size : t -> Size.t -> unit [@@js.set]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End ImageMap *)
 
 module MapPanes: sig
@@ -3579,7 +3579,7 @@ module StyledMapType: sig
   val set_radius: t -> float -> unit [@@js.set]
   val set_tile_size: t -> Size.t -> unit [@@js.set]
 end
-  [@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End Map Type *)
 
 (* Overlay *)
@@ -3610,7 +3610,7 @@ module OverlayView: sig
   val set_map: t -> Map.t -> unit [@@js.call]
   val set_map_streetview: t -> StreetViewPanorama.t -> unit [@@js.call "setMap"]
 end
-[@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End Overlay *)
 
 (* Save *)
@@ -3639,7 +3639,7 @@ module SaveWidget: sig
   val set_options: t -> SaveWidgetOptions.t -> unit [@@js.call]
   val set_place: t -> MarkerPlace.t -> unit [@@js.call]
 end
-  [@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End save *)
 
 
@@ -3662,7 +3662,7 @@ module TrafficLayer: sig
   val set_map: t -> Map.t -> unit [@@js.call]
   val set_options: t -> TrafficLayerOptions.t -> unit [@@js.call]
 end
-  [@js.scope "google.maps"]
+[@js.scope "maps"][@js.scope "google"]
 (* End Traffic Layer *)
 
 (* Namespaces *)
@@ -3670,7 +3670,8 @@ module Encoding: sig
   val decode_path: string -> LatLng.t list [@@js.global]
   val encode_path: LatLng.t list -> string [@@js.global]
 end
-[@js.scope "google.maps.geometry.encoding"]
+[@js.scope "encoding"][@js.scope "geometry"]
+[@js.scope "maps"][@js.scope "google"]
 
 module Spherical: sig
   val compute_area:
@@ -3727,7 +3728,7 @@ module Spherical: sig
     LatLng.t
   [@@js.global]
 end
-[@js.scope "google.maps.geometry.spherical"]
+[@js.scope "spherical"][@js.scope "geometry"][@js.scope "maps"][@js.scope "google"]
 
 module Poly: sig
   val contains_location:
@@ -3752,5 +3753,5 @@ module Poly: sig
     bool
     [@@js.global "isLocationOnEdge"]
 end
-[@js.scope "google.maps.geometry.poly"]
+[@js.scope "poly"][@js.scope "geometry"][@js.scope "maps"][@js.scope "google"]
 (* End Namespaces *)
