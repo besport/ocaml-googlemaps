@@ -2902,7 +2902,7 @@ module DrawingManager: sig
   val set_map : t -> Map.t -> unit [@@js.call]
   val set_options : t -> DrawingManagerOptions.t -> unit [@@js.call]
 end
-[@js.scope "google.map.drawing"]
+[@js.scope "google.maps.drawing"]
 (* End drawing *)
 
 module WeightedLocation: sig
