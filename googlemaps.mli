@@ -148,7 +148,7 @@ module LatLng: sig
   val t_to_js : t -> Ojs.t
   val t_of_js : Ojs.t -> t
 end
-[@js.scope "map"][@js.scope "woosmap"]
+[@js.scope "maps"][@js.scope "google"]
 
 module LatLngBounds: sig
   type t
@@ -164,7 +164,7 @@ module LatLngBounds: sig
   val to_string: t -> unit -> string [@@js.call]
   val union: t -> t -> t [@@js.call]
 end
-[@js.scope "map"][@js.scope "woosmap"]
+[@js.scope "maps"][@js.scope "google"]
 
 module Point: sig
   type t
@@ -1671,7 +1671,7 @@ module Geocoder: sig
     (GeocoderResult.t list option -> geocoder_status -> unit) ->
     unit [@@js.call]
 end
-[@js.scope "map"][@js.scope "woosmap"]
+[@js.scope "maps"][@js.scope "google"]
 (* End geocoding *)
 
 (* Distance, time, distance *)
@@ -2259,7 +2259,7 @@ module PlacePhoto: sig
     [@@js.verbatim_names]
   val set_width: t -> int -> unit [@@js.set]
 end
-[@js.scope "places"][@js.scope "map"][@js.scope "woosmap"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 
 module PlaceGeometry: sig
   type t
@@ -2355,7 +2355,7 @@ module AutocompleteSessionToken : sig
   type t
   val new_autocomplete_session_token : unit -> t [@@js.new]
 end
-[@js.scope "places"][@js.scope "map"][@js.scope "woosmap"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 
 module PlaceDetailsRequest: sig
   type t
@@ -2394,7 +2394,7 @@ module PlaceSearchPagination: sig
   val has_next_page : t -> bool [@@js.get]
   val set_has_next_page : t -> bool -> unit [@@js.set]
 end
-[@js.scope "places"][@js.scope "map"][@js.scope "woosmap"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 
 type rank_by =
   | Prominence [@js 0]
@@ -2522,7 +2522,7 @@ module PlacesService: sig
      unit) ->
     unit [@@js.call]
 end
-[@js.scope "places"][@js.scope "map"][@js.scope "woosmap"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 (* End Place *)
 
 
@@ -2701,7 +2701,7 @@ module AutocompleteService: sig
     (QueryAutocompletePrediction.t list -> places_service_status -> unit) ->
     unit [@@js.call]
 end
-[@js.scope "places"][@js.scope "map"][@js.scope "woosmap"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 
 module Autocomplete: sig
   type t
@@ -2719,7 +2719,7 @@ module Autocomplete: sig
   val t_to_js : t -> Ojs.t
   val t_of_js : Ojs.t -> t
 end
-[@js.scope "places"][@js.scope "map"][@js.scope "woosmap"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 (* End autocompleter *)
 
 (* Distance Matrix *)
@@ -3342,7 +3342,7 @@ module SearchBox: sig
   val t_to_js : t -> Ojs.t
   val t_of_js : Ojs.t -> t
 end
-[@js.scope "places"][@js.scope "map"][@js.scope "woosmap"]
+[@js.scope "places"][@js.scope "maps"][@js.scope "google"]
 (* End searchbox *)
 
 
