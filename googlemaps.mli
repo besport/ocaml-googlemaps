@@ -3755,3 +3755,61 @@ module Poly: sig
 end
 [@js.scope "poly"][@js.scope "geometry"][@js.scope "maps"][@js.scope "google"]
 (* End Namespaces *)
+
+(*MarkerClusterer:*)
+type mc (*the MarkerClusterer type*)
+
+val t : unit -> mc [@@js.get "MarkerClusterer"]
+
+(*val t_v2 : unit -> mc [@@js.get "window.MarkerClusterer"]*)
+
+(*a MarkerClusterer element*)
+[@@@js.stop]
+
+type mc_elt = mc Js_of_ocaml.Js.t
+
+[@@@js.start]
+
+[@@@js.implem type mc_elt = mc Js_of_ocaml.Js.t]
+
+[@@@js.implem let mc_elt_of_js = Obj.magic]
+
+[@@@js.implem let mc_elt_to_js = Obj.magic]
+
+module MarkerClusterer : sig
+  type styles
+
+  val styles :
+    ?url:string ->
+    ?height:int ->
+    ?width:int ->
+    ?anchor:int array ->
+    ?text_color:string ->
+    ?text_size:int ->
+    unit ->
+    styles
+      [@@js.builder] [@@js.verbatim_names]
+
+  type opts
+
+  val opts :
+    ?grid_size:int ->
+    ?max_zoom:int ->
+    ?zoom_on_click:bool ->
+    ?info_on_click:bool ->
+    ?info_on_click_zoom:int ->
+    ?styles:styles ->
+    unit ->
+    opts
+      [@@js.builder] [@@js.verbatim_names]
+
+  val new_marker_clusterer :
+    Map.t -> ?opt_markers:Marker.t -> ?opt_options:opts -> unit -> mc_elt
+    [@@js.new]
+
+  val set_max_zoom : mc_elt -> int -> unit [@@js.call "setMaxZoom"]
+
+  val add_marker : mc_elt -> Marker.t -> ?opt_nodraw:bool -> unit -> unit
+    [@@js.call "addMarker"]
+end
+[@js.scope "MarkerClusterer"]

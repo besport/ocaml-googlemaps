@@ -19,7 +19,7 @@ opam install ocaml-googlemaps
 A minimal example can be found in the folder example.
 You only need to type ```make``` in the ```example``` folder to get ```example.js```, open ```index.html``` to see the result
 
-### Compilation : 
+### Compilation :
 First, compile your source code into ocaml bytecode :
 ```
 ocamlfind ocamlc -o example.byte -no-check-prims -package js_of_ocaml,gen_js_api,ocaml-googlemaps -linkpkg example.ml
@@ -42,12 +42,12 @@ The conventions used are ```gen_js_api``` 's :
     * ```create``` : which creates the object. Its parameters are all labelled by fields name
     * ```foofield``` : a getter for the field called ```foofield```
     * ```set_foofield``` : a setter for the field called ```foofield```
- 
+
 **WARNING** : Some objects in Google Map API contain a field called ```type```. As ```type``` is a keyword in OCaml, you need to use ```type'```
 
 Example in Javascript :
 ```javascript
-var opts = 
+var opts =
   {
     center: {lat: -34.397, lng: 150.644},
     zoom: 10
@@ -66,7 +66,13 @@ let map = Map.new_map maps opts ()
 ```
 Here, as the last arguments of ```create``` and ```new_map``` are optional, we also need to give ```()```
 
-### Version used : 
+### MarkerClusterer
+
+The `2.4` version added a `MarkerClusterer` module into `Googlemap`: a
+module that do a binding to the [MarkerClusterer
+plugin](https://github.com/plank/MarkerClusterer).
+
+### Version used :
 This binding is using Google Map v3.24
 
 ### Known bugs:
